@@ -11,6 +11,15 @@ const single = (id: string, label: string, num: string, col: 0|1|2, indent = 0, 
   ...opts
 });
 
+const staticRow = (id: string, text: string, num: string, col: 0|1|2, indent = 0, opts: Partial<RowConfig> = {}): RowConfig => ({
+  id,
+  zones: [{ id: `${id}_static`, expectedLabels: [], widthClass: 'w-full', placeholder: text, isStaticText: true }],
+  displayNumber: num,
+  columnIndex: col,
+  indent,
+  ...opts
+});
+
 const operatorRow = (id: string, op: string, label: string, num: string, col: 0|1|2, indent = 0, opts: Partial<RowConfig> = {}): RowConfig => ({
   id,
   zones: [
@@ -434,17 +443,17 @@ const LEVEL_6_LABELS = [
   "Kenderaan", "Alatan Pejabat",
   "Aset Semasa",
   "Inventori Akhir",
-  "Akaun Belum Terima", "Tolak", "Peruntukan Hutang Ragu",
-  "Bank", "Tunai", "Komisen Belum Terperoleh",
-  "Liabiliti Semasa",
+  "Akaun Belum Terima", "Tolak", "Peruntukan Hutang Ragu", "Tolak", "Tolak", // Added extra Tolak for operators
+  "Bank", "Tunai", "Komisen Belum Terima",
+  "Liabiliti Semasa", "Tolak", // Added Tolak
   "Akaun Belum Bayar", "Belanja Am Belum Bayar",
   "Modal Kerja",
-  "Ekuiti Pemilik", "Modal Awal", "Untung Bersih", "Ambilan", "Modal Akhir",
+  "Ekuiti Pemilik", "Modal Awal", "Tambah", "Untung Bersih", "Ambilan", "Modal Akhir",
   "Liabiliti Bukan Semasa", "Pinjaman"
 ];
 
 const l6_abs_items = ["Kenderaan", "Alatan Pejabat"];
-const l6_as_swappable = ["Inventori Akhir", "Bank", "Tunai", "Komisen Belum Terperoleh"];
+const l6_as_swappable = ["Inventori Akhir", "Bank", "Tunai", "Komisen Belum Terima"]; // Renamed
 const l6_ls_items = ["Akaun Belum Bayar", "Belanja Am Belum Bayar"];
 
 const LEVEL_6_STRUCTURE: RowConfig[] = [
@@ -499,7 +508,7 @@ const LEVEL_6_STRUCTURE: RowConfig[] = [
   {
     id: 'l6_less_ls',
     zones: [
-      { id: 'l6_ls_op', expectedLabels: ['Tolak'], widthClass: 'w-20' },
+      { id: 'l6_ls_op', expectedLabels: ['Tolak'], widthClass: 'w-20' }, // Tolak is here
       { id: 'l6_ls_lbl', expectedLabels: ['Liabiliti Semasa'], widthClass: 'flex-1' }
     ],
     displayNumber: '',
@@ -522,7 +531,7 @@ const LEVEL_6_STRUCTURE: RowConfig[] = [
 
   headerRow('l6_ep_header', 'Ekuiti Pemilik'),
   single('l6_ma', 'Modal Awal', 'x', 2),
-  single('l6_ub', 'Untung Bersih', 'x', 2, 0, { hasBottomBorder: true }),
+  operatorRow('l6_ub', 'Tambah', 'Untung Bersih', 'x', 2, 0, { hasBottomBorder: true }), // Changed to operatorRow
   { id: 'l6_ep_sub', zones: [], displayNumber: 'xx', columnIndex: 2, isSpacer: true },
   operatorRow('l6_amb', 'Tolak', 'Ambilan', '(x)', 2, 0, { hasBottomBorder: true }),
   single('l6_ma_end', 'Modal Akhir', 'xx', 2),
@@ -773,6 +782,224 @@ const LEVEL_10_STRUCTURE: RowConfig[] = [
   formulaRow('f_dpp', 'Tempoh Pembayaran Hutang', 'Akaun Belum Bayar', 'Belian Kredit', 'x 365 hari')
 ];
 
+// --- LEVEL 11: PENYATA PENYESUAIAN BANK ---
+
+const LEVEL_11_LABELS = [
+  "Debit", "Kredit",
+  "Tambah", "Tolak",
+  "Cek Belum Dikemukakan",
+  "Deposit Belum Dikreditkan"
+];
+
+const LEVEL_11_STRUCTURE: RowConfig[] = [
+  {
+    id: 'l11_row1',
+    zones: [
+       { id: 'l11_t1', expectedLabels: [], placeholder: 'Baki ', widthClass: 'w-auto', isStaticText: true },
+       { id: 'l11_d1', expectedLabels: ["Debit"], widthClass: 'w-24', placeholder: 'Dr/Cr' },
+       { id: 'l11_t2', expectedLabels: [], placeholder: ' di Buku Tunai', widthClass: 'flex-1', isStaticText: true },
+    ],
+    displayNumber: '23 090',
+    columnIndex: 2
+  },
+  
+  {
+    id: 'l11_add',
+    zones: [
+       { id: 'l11_add_op', expectedLabels: ["Tambah"], widthClass: 'w-24' },
+       { id: 'l11_cbd', expectedLabels: ["Cek Belum Dikemukakan"], widthClass: 'flex-1' }
+    ],
+    displayNumber: '',
+    columnIndex: 2
+  },
+
+  staticRow('l11_ind_1', 'Belanja runcit (No. cek 112124)', '448', 1, 1),
+  staticRow('l11_ind_2', 'Belian (No. cek 112125)', '1 212', 1, 1, { hasBottomBorder: true }),
+  
+  { id: 'l11_calc_1', zones: [], displayNumber: '1 660', columnIndex: 2, isSpacer: true, hasBottomBorder: true },
+  { id: 'l11_calc_2', zones: [], displayNumber: '24 750', columnIndex: 2, isSpacer: true },
+
+  {
+    id: 'l11_less',
+    zones: [
+       { id: 'l11_less_op', expectedLabels: ["Tolak"], widthClass: 'w-24' },
+       { id: 'l11_dbd', expectedLabels: ["Deposit Belum Dikreditkan"], widthClass: 'flex-1' }
+    ],
+    displayNumber: '',
+    columnIndex: 2
+  },
+
+  staticRow('l11_ind_3', 'Anis Trading', '(1 928)', 2, 1, { hasBottomBorder: true }),
+  
+  {
+    id: 'l11_row_last',
+    zones: [
+       { id: 'l11_t3', expectedLabels: [], placeholder: 'Baki ', widthClass: 'w-auto', isStaticText: true },
+       { id: 'l11_c1', expectedLabels: ["Kredit"], widthClass: 'w-24', placeholder: 'Dr/Cr' },
+       { id: 'l11_t4', expectedLabels: [], placeholder: ' di Penyata Bank', widthClass: 'flex-1', isStaticText: true },
+    ],
+    displayNumber: '22 822',
+    columnIndex: 2,
+    isTotal: true
+  }
+];
+
+// --- LEVEL 12: AKAUN YURAN AHLI (LEDGER) ---
+
+// EXACT POOL COUNT (7 items needed for 7 slots) to ensure excess logic works
+const LEVEL_12_LABELS = [
+  "Yuran Belum Terima", "Yuran Belum Terima",
+  "Yuran Belum Terperoleh", "Yuran Belum Terperoleh",
+  "Pendapatan dan Perbelanjaan",
+  "Bank",
+  "Yuran Lapuk"
+];
+
+const l12_cr_swap = "l12_cr_swap";
+
+const LEVEL_12_STRUCTURE: RowConfig[] = [
+  // Row 1: Jan 1
+  ledgerRow('l12_r1', 
+    { date: 'Jan 1', zone: { id: 'l12_d1', expectedLabels: ['Yuran Belum Terima'], widthClass: 'w-full' }, col1: '159' }, 
+    { date: 'Jan 1', zone: { id: 'l12_c1', expectedLabels: ['Yuran Belum Terperoleh'], widthClass: 'w-full' }, col1: '205' }
+  ),
+  // Row 2: Dis 31 (First)
+  ledgerRow('l12_r2', 
+    { date: 'Dis 31', zone: { id: 'l12_d2', expectedLabels: ['Pendapatan dan Perbelanjaan'], widthClass: 'w-full', group: 'l12_items' }, col1: '13 296' }, 
+    { date: 'Dis 31', zone: { id: 'l12_c2', expectedLabels: ['Bank'], widthClass: 'w-full', group: l12_cr_swap }, col1: '13 200' }
+  ),
+  // Row 3: Dis 31 (Second) - Debit moves up, Credit is Lapuk
+  ledgerRow('l12_r3', 
+    { date: '', zone: { id: 'l12_d3', expectedLabels: ['Yuran Belum Terperoleh'], widthClass: 'w-full' }, col1: '180' }, 
+    { date: '', zone: { id: 'l12_c2_extra', expectedLabels: ['Yuran Lapuk'], widthClass: 'w-full', group: l12_cr_swap }, col1: '30' }
+  ),
+  // Row 4: Dis 31 (Third) - Debit Empty, Credit Closing Balance
+  ledgerRow('l12_r4', 
+    { date: '', staticLabel: '', col1: '' }, 
+    { date: '', zone: { id: 'l12_c3', expectedLabels: ['Yuran Belum Terima'], widthClass: 'w-full' }, col1: '230' }
+  ),
+  ledgerRow('l12_r_total', 
+    { date: '', staticLabel: '', col1: '13 635' }, 
+    { date: '', staticLabel: '', col1: '13 635' },
+    { isTotal: true }
+  )
+];
+
+// --- LEVEL 13: AKAUN KAWALAN BELUM TERIMA (AKBT) ---
+
+// Explicit pool to handle quantities correctly
+const LEVEL_13_LABELS = [
+  // Debits (1 each)
+  'Jualan', 'Faedah', 'Bank (Cek tak laku)', 'Diskaun Diberi (dibatalkan)',
+  // Credits (1 each)
+  'Pulangan Jualan', 'Bank', 'Diskaun Diberi', 'Hutang Lapuk', 'Kontra',
+  // Baki Start (1 of each)
+  'Baki b/b (+)', 'Baki b/b (-)',
+  // Baki End (1 of each)
+  'Baki h/b (+)', 'Baki h/b (-)',
+  // Baki Next (1 of each)
+  'Baki b/b (+)', 'Baki b/b (-)'
+];
+
+// Swappable Groups
+const l13_debit = ['Jualan', 'Faedah', 'Bank (Cek tak laku)', 'Diskaun Diberi (dibatalkan)'];
+const l13_credit = ['Pulangan Jualan', 'Bank', 'Diskaun Diberi', 'Hutang Lapuk', 'Kontra'];
+
+const LEVEL_13_STRUCTURE: RowConfig[] = [
+  ledgerRow('l13_r1', 
+    { date: '2025 Jan 1', zone: { id: 'l13_b_start_d', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }, 
+    { date: '2025 Jan 1', zone: { id: 'l13_b_start_c', expectedLabels: ['Baki b/b (-)'], widthClass: 'w-full' }, col1: 'XX' }
+  ),
+  // Swappable Rows (4 rows left, 6 rows right roughly)
+  ledgerRow('l13_r2', 
+    { date: 'Dis 31', zone: { id: 'l13_d1', expectedLabels: l13_debit, widthClass: 'w-full', group: 'l13_d' }, col1: 'XX' }, 
+    { date: 'Dis 31', zone: { id: 'l13_c1', expectedLabels: l13_credit, widthClass: 'w-full', group: 'l13_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l13_r3', 
+    { date: '', zone: { id: 'l13_d2', expectedLabels: l13_debit, widthClass: 'w-full', group: 'l13_d' }, col1: 'XX' }, 
+    { date: '', zone: { id: 'l13_c2', expectedLabels: l13_credit, widthClass: 'w-full', group: 'l13_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l13_r4', 
+    { date: '', zone: { id: 'l13_d3', expectedLabels: l13_debit, widthClass: 'w-full', group: 'l13_d' }, col1: 'XX' }, 
+    { date: '', zone: { id: 'l13_c3', expectedLabels: l13_credit, widthClass: 'w-full', group: 'l13_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l13_r5', 
+    { date: '', zone: { id: 'l13_d4', expectedLabels: l13_debit, widthClass: 'w-full', group: 'l13_d' }, col1: 'XX' }, 
+    { date: '', zone: { id: 'l13_c4', expectedLabels: l13_credit, widthClass: 'w-full', group: 'l13_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l13_r6', 
+    { date: '', zone: { id: 'l13_b_end_d', expectedLabels: ['Baki h/b (-)'], widthClass: 'w-full' }, col1: 'XX' }, // Closing on Left
+    { date: '', zone: { id: 'l13_c5', expectedLabels: l13_credit, widthClass: 'w-full', group: 'l13_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l13_r7', 
+    { date: '', staticLabel: '', col1: '' }, 
+    { date: '', zone: { id: 'l13_b_end_c', expectedLabels: ['Baki h/b (+)'], widthClass: 'w-full' }, col1: 'XX' } // Closing on Right
+  ),
+  ledgerRow('l13_total', 
+    { date: '', staticLabel: '', col1: 'XXX' }, 
+    { date: '', staticLabel: '', col1: 'XXX' },
+    { isTotal: true }
+  ),
+  ledgerRow('l13_r_next', 
+    { date: '2026 Jan 1', zone: { id: 'l13_b_next_d', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }, 
+    { date: '2026 Jan 1', zone: { id: 'l13_b_next_c', expectedLabels: ['Baki b/b (-)'], widthClass: 'w-full' }, col1: 'XX' }
+  )
+];
+
+// --- LEVEL 14: AKAUN KAWALAN BELUM BAYAR (AKBB) ---
+
+const LEVEL_14_LABELS = [
+  // Debits (1 each)
+  'Bank', 'Diskaun Diterima', 'Pulangan Belian', 'Kontra',
+  // Credits (1 each)
+  'Belian', 'Angkutan Masuk', 'Faedah',
+  // Baki Start (1 of each)
+  'Baki b/b (+)', 'Baki b/b (-)',
+  // Baki End (1 of each)
+  'Baki h/b (+)', 'Baki h/b (-)',
+  // Baki Next (1 of each)
+  'Baki b/b (+)', 'Baki b/b (-)'
+];
+
+const l14_debit = ['Bank', 'Diskaun Diterima', 'Pulangan Belian', 'Kontra'];
+const l14_credit = ['Belian', 'Angkutan Masuk', 'Faedah'];
+
+const LEVEL_14_STRUCTURE: RowConfig[] = [
+  ledgerRow('l14_r1', 
+    { date: '2025 Jan 1', zone: { id: 'l14_b_start_d', expectedLabels: ['Baki b/b (-)'], widthClass: 'w-full' }, col1: 'XX' }, 
+    { date: '2025 Jan 1', zone: { id: 'l14_b_start_c', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }
+  ),
+  ledgerRow('l14_r2', 
+    { date: 'Dis 31', zone: { id: 'l14_d1', expectedLabels: l14_debit, widthClass: 'w-full', group: 'l14_d' }, col1: 'XX' }, 
+    { date: 'Dis 31', zone: { id: 'l14_c1', expectedLabels: l14_credit, widthClass: 'w-full', group: 'l14_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l14_r3', 
+    { date: '', zone: { id: 'l14_d2', expectedLabels: l14_debit, widthClass: 'w-full', group: 'l14_d' }, col1: 'XX' }, 
+    { date: '', zone: { id: 'l14_c2', expectedLabels: l14_credit, widthClass: 'w-full', group: 'l14_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l14_r4', 
+    { date: '', zone: { id: 'l14_d3', expectedLabels: l14_debit, widthClass: 'w-full', group: 'l14_d' }, col1: 'XX' }, 
+    { date: '', zone: { id: 'l14_c3', expectedLabels: l14_credit, widthClass: 'w-full', group: 'l14_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l14_r5', 
+    { date: '', zone: { id: 'l14_d4', expectedLabels: l14_debit, widthClass: 'w-full', group: 'l14_d' }, col1: 'XX' }, 
+    { date: '', zone: { id: 'l14_b_end_c', expectedLabels: ['Baki h/b (-)'], widthClass: 'w-full' }, col1: 'XX' }
+  ),
+  ledgerRow('l14_r6', 
+    { date: '', zone: { id: 'l14_b_end_d', expectedLabels: ['Baki h/b (+)'], widthClass: 'w-full' }, col1: 'XX' }, 
+    { date: '', staticLabel: '', col1: '' }
+  ),
+  ledgerRow('l14_total', 
+    { date: '', staticLabel: '', col1: 'XXX' }, 
+    { date: '', staticLabel: '', col1: 'XXX' },
+    { isTotal: true }
+  ),
+  ledgerRow('l14_r_next', 
+    { date: '2026 Jan 1', zone: { id: 'l14_b_next_d', expectedLabels: ['Baki b/b (-)'], widthClass: 'w-full' }, col1: 'XX' }, 
+    { date: '2026 Jan 1', zone: { id: 'l14_b_next_c', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }
+  )
+];
+
 
 export const LEVELS: LevelConfig[] = [
   {
@@ -829,7 +1056,9 @@ export const LEVELS: LevelConfig[] = [
     subtitle: "Akaun Semasa bagi tahun berakhir 31 Disember 2017",
     labels: LEVEL_8_LABELS,
     structure: LEVEL_8_STRUCTURE,
-    layoutType: 'ledger'
+    layoutType: 'ledger',
+    ledgerColumns: 'double',
+    ledgerHeaders: ['Sarah', 'Helmi']
   },
   {
     title: "Titik Pulang Modal",
@@ -845,6 +1074,40 @@ export const LEVELS: LevelConfig[] = [
     labels: LEVEL_10_LABELS,
     structure: LEVEL_10_STRUCTURE,
     layoutType: 'formula'
+  },
+  {
+    title: "Penyata Penyesuaian Bank",
+    subtitle: "Penyata Penyesuaian Bank pada 31 Ogos 2017",
+    labels: LEVEL_11_LABELS,
+    structure: LEVEL_11_STRUCTURE,
+    layoutType: 'statement'
+  },
+  {
+    title: "Akaun Yuran Ahli",
+    subtitle: "Akaun Yuran", // Simplified Title
+    labels: LEVEL_12_LABELS,
+    structure: LEVEL_12_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM']
+  },
+  {
+    title: "Akaun Kawalan Belum Terima",
+    subtitle: "Akaun Kawalan Belum Terima",
+    labels: LEVEL_13_LABELS,
+    structure: LEVEL_13_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM']
+  },
+  {
+    title: "Akaun Kawalan Belum Bayar",
+    subtitle: "Akaun Kawalan Belum Bayar",
+    labels: LEVEL_14_LABELS,
+    structure: LEVEL_14_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM']
   }
 ];
 

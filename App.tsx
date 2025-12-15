@@ -180,6 +180,8 @@ export default function App() {
   const activeSubtitle = activeLevelConfig.subtitle;
   const layoutType = activeLevelConfig.layoutType;
   const graphZones = activeLevelConfig.graphZones;
+  const ledgerColumns = activeLevelConfig.ledgerColumns || 'double';
+  const ledgerHeaders = activeLevelConfig.ledgerHeaders || ['Sarah', 'Helmi'];
 
   useEffect(() => {
     if (view !== 'game') return;
@@ -460,6 +462,8 @@ export default function App() {
         // 3. Determine if we need to "Burn" this entry (clear slot to allow more inputs)
         // If we have more items than slots, we must clear the slot after 1s to allow the user to 'use up' the extras.
         // NOTE: Formula mode usually has infinite items, so we skip this logic for it.
+        // UPDATED: Enabled for ledgers too (removed layoutType !== 'ledger' check) so penalties/clones disappear correctly.
+        // We rely on exact pool counts in constants.ts to prevent valid items from disappearing.
         const isExcess = !isFormula && (remainingItemsCount > remainingSlotsCount);
 
         const scorePoints = isExcess ? 0 : (item.isClone ? 1 : 2);
@@ -552,6 +556,15 @@ export default function App() {
       if (zone.expectedLabels.length === 0 && !zone.placeholder) {
          // Pure spacer or invalid zone
          return <div key={zone.id} className={`${zone.widthClass} flex-shrink-0`}></div>;
+      }
+
+      // Check for Static Text Mode
+      if (zone.isStaticText) {
+          return (
+             <div key={zone.id} className={`${zone.widthClass} flex-shrink-0 flex items-center whitespace-pre text-gray-800 font-semibold text-sm`}>
+                {zone.placeholder || zone.expectedLabels[0]}
+             </div>
+          );
       }
       
       // Static placeholder logic (e.g. "2" in formula)
@@ -738,6 +751,9 @@ export default function App() {
     const cellText = "text-right font-mono-numbers text-gray-800 text-sm p-1";
     const borderRight = "border-r border-gray-200";
     const borderRightThick = "border-r border-gray-900"; 
+    
+    // Determine Col Span based on ledger type
+    const isSingleCol = ledgerColumns === 'single';
 
     const renderSide = (sideConfig?: LedgerSideConfig, isRight?: boolean) => {
       if (!sideConfig) return null;
@@ -747,7 +763,9 @@ export default function App() {
              <td className="bg-transparent border-r border-transparent"></td>
              <td className="bg-transparent border-r border-transparent"></td>
              <td className={`${amountClasses} ${cellText} ${borderRight}`}>{sideConfig.col1}</td>
-             <td className={`${amountClasses} ${cellText} ${isRight ? '' : borderRightThick}`}>{sideConfig.col2}</td>
+             {!isSingleCol && (
+                 <td className={`${amountClasses} ${cellText} ${isRight ? '' : borderRightThick}`}>{sideConfig.col2}</td>
+             )}
            </>
          );
       }
@@ -761,7 +779,9 @@ export default function App() {
             }
           </td>
           <td className={`${amountClasses} ${cellText} ${borderRight}`}>{sideConfig.col1}</td>
-          <td className={`${amountClasses} ${cellText} ${isRight ? '' : borderRightThick}`}>{sideConfig.col2}</td>
+          {!isSingleCol && (
+            <td className={`${amountClasses} ${cellText} ${isRight ? '' : borderRightThick}`}>{sideConfig.col2}</td>
+          )}
         </>
       );
     };
@@ -870,6 +890,10 @@ export default function App() {
     );
   }
 
+  const isSingleCol = ledgerColumns === 'single';
+  const headerCol1 = ledgerHeaders[0];
+  const headerCol2 = ledgerHeaders[1];
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-200 select-none font-sans">
       <Header currentLevel={currentLevel} studentName={studentName} onBack={() => setView('selection')} />
@@ -910,18 +934,21 @@ export default function App() {
               <table className="w-full text-sm border-collapse min-w-[800px]">
                 <thead className="bg-indigo-50 border-b-2 border-indigo-100">
                   <tr>
-                    <th colSpan={4} className="py-2 border-r border-gray-900 text-center font-bold text-indigo-900 uppercase tracking-wider">Debit</th>
-                    <th colSpan={4} className="py-2 text-center font-bold text-indigo-900 uppercase tracking-wider">Credit</th>
+                    <th colSpan={isSingleCol ? 3 : 4} className="py-2 border-r border-gray-900 text-center font-bold text-indigo-900 uppercase tracking-wider">Debit</th>
+                    <th colSpan={isSingleCol ? 3 : 4} className="py-2 text-center font-bold text-indigo-900 uppercase tracking-wider">Credit</th>
                   </tr>
                   <tr className="text-xs text-gray-500 uppercase tracking-wider">
+                    {/* LEFT HEADER */}
                     <th className="p-2 border-r border-gray-200">Tarikh</th>
                     <th className="p-2 border-r border-gray-200 w-1/4">Butiran</th>
-                    <th className="p-2 border-r border-gray-200">Sarah</th>
-                    <th className="p-2 border-r border-gray-900">Helmi</th>
+                    <th className={`p-2 border-r ${isSingleCol ? 'border-gray-900' : 'border-gray-200'}`}>{headerCol1}</th>
+                    {!isSingleCol && <th className="p-2 border-r border-gray-900">{headerCol2}</th>}
+                    
+                    {/* RIGHT HEADER */}
                     <th className="p-2 border-r border-gray-200">Tarikh</th>
                     <th className="p-2 border-r border-gray-200 w-1/4">Butiran</th>
-                    <th className="p-2 border-r border-gray-200">Sarah</th>
-                    <th className="p-2">Helmi</th>
+                    <th className={`p-2 ${isSingleCol ? '' : 'border-r border-gray-200'}`}>{headerCol1}</th>
+                    {!isSingleCol && <th className="p-2">{headerCol2}</th>}
                   </tr>
                 </thead>
                 <tbody>

@@ -13,14 +13,15 @@ export interface DropZoneConfig {
   placeholder?: string;
   group?: string; // For interchangeable items
   customStyle?: React.CSSProperties; // New: For absolute positioning in graphs
+  isStaticText?: boolean; // New: Render as plain text instead of a drop box
 }
 
 export interface LedgerSideConfig {
   date: string;
   zone?: DropZoneConfig; // The interactive item/label
   staticLabel?: string; // If not interactive, just text
-  col1: string; // Partner A Amount
-  col2: string; // Partner B Amount
+  col1: string; // Partner A Amount OR Amount (if single col)
+  col2?: string; // Partner B Amount (Optional)
 }
 
 export interface RowConfig {
@@ -38,7 +39,7 @@ export interface RowConfig {
   isUnderlined?: boolean; 
   columnZones?: { [key: number]: DropZoneConfig }; 
   
-  // Ledger (Level 8) Props
+  // Ledger (Level 8, 12-14) Props
   ledgerLeft?: LedgerSideConfig;
   ledgerRight?: LedgerSideConfig;
 
@@ -58,6 +59,10 @@ export interface LevelConfig {
   structure: RowConfig[]; // Used for statement/ledger
   graphZones?: DropZoneConfig[]; // Used for graph layout
   layoutType: 'statement' | 'ledger' | 'graph' | 'formula'; 
+  
+  // Ledger Specific Configs
+  ledgerColumns?: 'double' | 'single'; // 'double' for Partners, 'single' for Standard
+  ledgerHeaders?: string[]; // Custom headers [Col1, Col2] or [Amount]
 }
 
 export interface GameState {
