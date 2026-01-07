@@ -402,7 +402,6 @@ const LEVEL_5_STRUCTURE: RowConfig[] = [
     columnIndex: 0,
     indent: 0,
     isHeader: true,
-    isItalic: true,
     isUnderlined: true
   },
 
@@ -422,7 +421,6 @@ const LEVEL_5_STRUCTURE: RowConfig[] = [
     columnIndex: 0,
     indent: 0,
     isHeader: true,
-    isItalic: true,
     isUnderlined: true
   },
 
@@ -1000,6 +998,82 @@ const LEVEL_14_STRUCTURE: RowConfig[] = [
   )
 ];
 
+// --- LEVEL 15: AKAUN KAWALAN BELUM TERIMA (REKOD TAK LENGKAP) ---
+
+const LEVEL_15_LABELS = [
+  'Baki b/b (+)', 'Baki b/b (+)', // Two Baki b/b (+) needed (Top and Bottom)
+  'Jualan', 
+  'Bank', 'Pulangan Jualan', 'Diskaun Diberi', 'Baki h/b (+)'
+];
+
+const l15_credit = ['Bank', 'Pulangan Jualan', 'Diskaun Diberi'];
+
+const LEVEL_15_STRUCTURE: RowConfig[] = [
+  ledgerRow('l15_r1', 
+    { date: 'Jan 1', zone: { id: 'l15_bbal_start', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }, 
+    { date: 'Dis 31', zone: { id: 'l15_c1', expectedLabels: l15_credit, widthClass: 'w-full', group: 'l15_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l15_r2', 
+    { date: 'Dis 31', zone: { id: 'l15_jualan', expectedLabels: ['Jualan'], widthClass: 'w-full' }, col1: 'XX' }, 
+    { date: '', zone: { id: 'l15_c2', expectedLabels: l15_credit, widthClass: 'w-full', group: 'l15_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l15_r3', 
+    { date: '', staticLabel: '', col1: '' }, 
+    { date: '', zone: { id: 'l15_c3', expectedLabels: l15_credit, widthClass: 'w-full', group: 'l15_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l15_r4', 
+    { date: '', staticLabel: '', col1: '' }, 
+    { date: '', zone: { id: 'l15_bhb', expectedLabels: ['Baki h/b (+)'], widthClass: 'w-full' }, col1: 'XX' }
+  ),
+  ledgerRow('l15_total', 
+    { date: '', staticLabel: '', col1: 'XXX' }, 
+    { date: '', staticLabel: '', col1: 'XXX' },
+    { isTotal: true }
+  ),
+  ledgerRow('l15_r_next', 
+    { date: 'Jan 1', zone: { id: 'l15_bbal_next', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }, 
+    { date: '', staticLabel: '', col1: '' }
+  )
+];
+
+// --- LEVEL 16: AKAUN KAWALAN BELUM BAYAR (REKOD TAK LENGKAP) ---
+
+const LEVEL_16_LABELS = [
+  'Baki b/b (+)', 'Baki b/b (+)', // Two Baki b/b (+) needed (Top and Bottom)
+  'Belian', 
+  'Bank', 'Pulangan Belian', 'Diskaun Diterima', 'Baki h/b (+)'
+];
+
+const l16_debit = ['Bank', 'Pulangan Belian', 'Diskaun Diterima'];
+
+const LEVEL_16_STRUCTURE: RowConfig[] = [
+  ledgerRow('l16_r1', 
+    { date: 'Dis 31', zone: { id: 'l16_d1', expectedLabels: l16_debit, widthClass: 'w-full', group: 'l16_d' }, col1: 'XX' },
+    { date: 'Jan 1', zone: { id: 'l16_bbal_start', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }
+  ),
+  ledgerRow('l16_r2', 
+    { date: '', zone: { id: 'l16_d2', expectedLabels: l16_debit, widthClass: 'w-full', group: 'l16_d' }, col1: 'XX' }, 
+    { date: 'Dis 31', zone: { id: 'l16_belian', expectedLabels: ['Belian'], widthClass: 'w-full' }, col1: 'XX' }
+  ),
+  ledgerRow('l16_r3', 
+    { date: '', zone: { id: 'l16_d3', expectedLabels: l16_debit, widthClass: 'w-full', group: 'l16_d' }, col1: 'XX' }, 
+    { date: '', staticLabel: '', col1: '' }
+  ),
+  ledgerRow('l16_r4', 
+    { date: '', zone: { id: 'l16_bhb', expectedLabels: ['Baki h/b (+)'], widthClass: 'w-full' }, col1: 'XX' },
+    { date: '', staticLabel: '', col1: '' }
+  ),
+  ledgerRow('l16_total', 
+    { date: '', staticLabel: '', col1: 'XXX' }, 
+    { date: '', staticLabel: '', col1: 'XXX' },
+    { isTotal: true }
+  ),
+  ledgerRow('l16_r_next', 
+    { date: '', staticLabel: '', col1: '' },
+    { date: 'Jan 1', zone: { id: 'l16_bbal_next', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }
+  )
+];
+
 
 export const LEVELS: LevelConfig[] = [
   {
@@ -1105,6 +1179,24 @@ export const LEVELS: LevelConfig[] = [
     subtitle: "Akaun Kawalan Belum Bayar",
     labels: LEVEL_14_LABELS,
     structure: LEVEL_14_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM']
+  },
+  {
+    title: "Akaun Kawalan Belum Terima (Rekod Tak Lengkap)",
+    subtitle: "Mencari Jualan atau Baki h/b",
+    labels: LEVEL_15_LABELS,
+    structure: LEVEL_15_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM']
+  },
+  {
+    title: "Akaun Kawalan Belum Bayar (Rekod Tak Lengkap)",
+    subtitle: "Mencari Belian atau Baki h/b",
+    labels: LEVEL_16_LABELS,
+    structure: LEVEL_16_STRUCTURE,
     layoutType: 'ledger',
     ledgerColumns: 'single',
     ledgerHeaders: ['RM']
