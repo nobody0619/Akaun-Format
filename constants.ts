@@ -1001,12 +1001,12 @@ const LEVEL_14_STRUCTURE: RowConfig[] = [
 // --- LEVEL 15: AKAUN KAWALAN BELUM TERIMA (REKOD TAK LENGKAP) ---
 
 const LEVEL_15_LABELS = [
-  'Baki b/b (+)', 'Baki b/b (+)', // Two Baki b/b (+) needed (Top and Bottom)
+  'Baki b/b (+)', 'Baki b/b (+)', 
   'Jualan', 
-  'Bank', 'Pulangan Jualan', 'Diskaun Diberi', 'Baki h/b (+)'
+  'Bank', 'Pulangan Jualan', 'Diskaun Diberi', 'Hutang Lapuk', 'Baki h/b (+)'
 ];
 
-const l15_credit = ['Bank', 'Pulangan Jualan', 'Diskaun Diberi'];
+const l15_credit = ['Bank', 'Pulangan Jualan', 'Diskaun Diberi', 'Hutang Lapuk'];
 
 const LEVEL_15_STRUCTURE: RowConfig[] = [
   ledgerRow('l15_r1', 
@@ -1022,6 +1022,10 @@ const LEVEL_15_STRUCTURE: RowConfig[] = [
     { date: '', zone: { id: 'l15_c3', expectedLabels: l15_credit, widthClass: 'w-full', group: 'l15_c' }, col1: 'XX' }
   ),
   ledgerRow('l15_r4', 
+    { date: '', staticLabel: '', col1: '' }, 
+    { date: '', zone: { id: 'l15_c4', expectedLabels: l15_credit, widthClass: 'w-full', group: 'l15_c' }, col1: 'XX' }
+  ),
+  ledgerRow('l15_r5', 
     { date: '', staticLabel: '', col1: '' }, 
     { date: '', zone: { id: 'l15_bhb', expectedLabels: ['Baki h/b (+)'], widthClass: 'w-full' }, col1: 'XX' }
   ),
@@ -1039,7 +1043,7 @@ const LEVEL_15_STRUCTURE: RowConfig[] = [
 // --- LEVEL 16: AKAUN KAWALAN BELUM BAYAR (REKOD TAK LENGKAP) ---
 
 const LEVEL_16_LABELS = [
-  'Baki b/b (+)', 'Baki b/b (+)', // Two Baki b/b (+) needed (Top and Bottom)
+  'Baki b/b (+)', 'Baki b/b (+)', 
   'Belian', 
   'Bank', 'Pulangan Belian', 'Diskaun Diterima', 'Baki h/b (+)'
 ];
@@ -1072,6 +1076,84 @@ const LEVEL_16_STRUCTURE: RowConfig[] = [
     { date: '', staticLabel: '', col1: '' },
     { date: 'Jan 1', zone: { id: 'l16_bbal_next', expectedLabels: ['Baki b/b (+)'], widthClass: 'w-full' }, col1: 'XX' }
   )
+];
+
+
+// --- LEVEL 17: AKAUN PERDAGANGAN (KELAB DAN PERSATUAN) ---
+
+const l17_expenses = ['Lesen perniagaan', 'Upah pekerja kafe'];
+
+const LEVEL_17_LABELS = [
+  "Jualan",
+  "Tolak", "Kos Jualan",
+  "Inventori Awal",
+  "Tambah", "Belian",
+  "Tolak", "Inventori Akhir",
+  "Tambah", "Belanja Pengendalian",
+  "Lesen perniagaan",
+  "Upah pekerja kafe",
+  "Untung (kafe)"
+];
+
+const LEVEL_17_STRUCTURE: RowConfig[] = [
+  single('l17_jualan', 'Jualan', '15 520', 2),
+  {
+    id: 'l17_header_kos_jualan',
+    zones: [
+      { id: 'l17_h_op', expectedLabels: ['Tolak'], widthClass: 'w-20' },
+      { id: 'l17_h_item', expectedLabels: ['Kos Jualan'], widthClass: 'flex-1' }
+    ],
+    displayNumber: '',
+    columnIndex: 0,
+    isHeader: true,
+    indent: 0
+  },
+  single('l17_inv_awal', 'Inventori Awal', '2 320', 1),
+  operatorRow('l17_belian', 'Tambah', 'Belian', '12 750', 1, 0, { hasBottomBorder: true }),
+  
+  {
+    id: 'l17_belian_total',
+    zones: [],
+    displayNumber: '15 070',
+    columnIndex: 1,
+    isSpacer: true
+  },
+  
+  operatorRow('l17_inv_akhir', 'Tolak', 'Inventori Akhir', '(3 100)', 1, 0, { hasBottomBorder: true }),
+  
+  {
+    id: 'l17_kos_jualan_sub',
+    zones: [],
+    displayNumber: '11 970',
+    columnIndex: 1,
+    isSpacer: true
+  },
+
+  {
+    id: 'l17_header_belanja_pengendalian',
+    zones: [
+      { id: 'l17_bp_op', expectedLabels: ['Tambah'], widthClass: 'w-20' },
+      { id: 'l17_bp_item', expectedLabels: ['Belanja Pengendalian'], widthClass: 'flex-1' }
+    ],
+    displayNumber: '',
+    columnIndex: 0,
+    isHeader: true,
+    indent: 0
+  },
+
+  swappableRow('l17_exp_lesen', l17_expenses, 'l17_operating_expenses', '400', 1, 1),
+  swappableRow('l17_exp_upah', l17_expenses, 'l17_operating_expenses', '600', 1, 1, { hasBottomBorder: true }),
+
+  {
+    id: 'l17_total_operating_expenses',
+    zones: [],
+    displayNumber: '(12 970)',
+    columnIndex: 2,
+    isSpacer: true,
+    hasBottomBorder: true
+  },
+
+  single('l17_untung_kafe', 'Untung (kafe)', '2 550', 2, 0, { isTotal: true, isHeader: true })
 ];
 
 
@@ -1200,6 +1282,14 @@ export const LEVELS: LevelConfig[] = [
     layoutType: 'ledger',
     ledgerColumns: 'single',
     ledgerHeaders: ['RM']
+  },
+  {
+    title: "Akaun Perdagangan (Kelab dan Persatuan)",
+    subtitle: "Akaun Perdagangan bagi tahun berakhir 31 Disember 2017",
+    labels: LEVEL_17_LABELS,
+    structure: LEVEL_17_STRUCTURE,
+    layoutType: 'statement',
+    companyName: 'Kelab Badminton Taman Bukit Katil Kenari'
   }
 ];
 

@@ -59,6 +59,7 @@ export interface LevelConfig {
   structure: RowConfig[]; // Used for statement/ledger
   graphZones?: DropZoneConfig[]; // Used for graph layout
   layoutType: 'statement' | 'ledger' | 'graph' | 'formula'; 
+  companyName?: string; // Custom company/club name to display on the report header
   
   // Ledger Specific Configs
   ledgerColumns?: 'double' | 'single'; // 'double' for Partners, 'single' for Standard

@@ -30,7 +30,7 @@ const Header = ({
         </button>
         <div>
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2 tracking-tight">
-            <span className="text-yellow-500">Mastering Akaun</span>
+            <span className="text-yellow-500">Prinsip Akaun Format</span>
           </h1>
           <p className="text-slate-400 text-xs md:text-sm font-medium">Player: <span className="text-white">{studentName}</span></p>
         </div>
@@ -59,7 +59,7 @@ const WelcomeScreen = ({ onStart }: { onStart: (name: string) => void }) => {
           <div className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
             <Award className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Prinsip Akaun Master</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">Prinsip Akaun Format</h1>
           <p className="text-indigo-100">Enter your name to begin practice</p>
         </div>
         <form onSubmit={handleSubmit} className="p-8">
@@ -901,7 +901,9 @@ export default function App() {
       <main className="flex-grow p-4 md:p-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto w-full">
         <div className="flex-grow bg-white shadow-2xl rounded-lg overflow-hidden relative min-h-[600px] flex flex-col">
           <div className="text-center pt-8 pb-4 bg-white border-b border-gray-100 px-4">
-            <h2 className="font-extrabold text-xl md:text-2xl uppercase tracking-widest text-gray-900 mb-1">Perniagaan Hakim Berjaya</h2>
+            <h2 className="font-extrabold text-xl md:text-2xl uppercase tracking-widest text-gray-900 mb-1">
+              {activeLevelConfig.companyName || "Perniagaan Hakim Berjaya"}
+            </h2>
             <h3 className="font-semibold text-sm md:text-base text-gray-500 uppercase tracking-wide">{activeSubtitle}</h3>
              <div className="flex items-center justify-center gap-4 mt-2">
                  <div className="flex items-center gap-1 text-sm font-bold text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
