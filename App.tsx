@@ -946,14 +946,27 @@ export default function App() {
                 )}
                 <table className={`w-full text-sm border-collapse min-w-[800px] ${isTAccount ? "max-w-5xl mx-auto border-t-2 border-gray-900 table-fixed" : ""}`}>
                 {isTAccount && (
-                  <colgroup>
-                    <col className="w-[10%]" />
-                    <col className="w-[32%]" />
-                    <col className="w-[8%]" />
-                    <col className="w-[10%]" />
-                    <col className="w-[32%]" />
-                    <col className="w-[8%]" />
-                  </colgroup>
+                  isSingleCol ? (
+                    <colgroup>
+                      <col className="w-[10%]" />
+                      <col className="w-[32%]" />
+                      <col className="w-[8%]" />
+                      <col className="w-[10%]" />
+                      <col className="w-[32%]" />
+                      <col className="w-[8%]" />
+                    </colgroup>
+                  ) : (
+                    <colgroup>
+                      <col className="w-[8%]" />
+                      <col className="w-[26%]" />
+                      <col className="w-[8%]" />
+                      <col className="w-[8%]" />
+                      <col className="w-[8%]" />
+                      <col className="w-[26%]" />
+                      <col className="w-[8%]" />
+                      <col className="w-[8%]" />
+                    </colgroup>
+                  )
                 )}
                 <thead className={isTAccount ? "bg-white" : "bg-indigo-50 border-b-2 border-indigo-100"}>
                   {!isTAccount && (

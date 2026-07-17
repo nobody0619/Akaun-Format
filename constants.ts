@@ -1268,13 +1268,15 @@ export const LEVELS: LevelConfig[] = [
     layoutType: 'statement'
   },
   {
-    title: "Akaun Semasa (beruangan)",
-    subtitle: "Akaun Semasa bagi tahun berakhir 31 Disember 2017",
+    title: "Akaun Semasa (Beruangan)",
+    subtitle: "Akaun Semasa",
     labels: LEVEL_8_LABELS,
     structure: LEVEL_8_STRUCTURE,
     layoutType: 'ledger',
     ledgerColumns: 'double',
-    ledgerHeaders: ['Sarah', 'Helmi']
+    ledgerHeaders: ['Sarah', 'Helmi'],
+    ledgerVariant: 't-account',
+    companyName: 'Akaun Semasa (Beruangan)'
   },
   {
     title: "Akaun Belanja",
