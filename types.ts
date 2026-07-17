@@ -65,6 +65,7 @@ export interface LevelConfig {
   ledgerColumns?: 'double' | 'single'; // 'double' for Partners, 'single' for Standard
   ledgerHeaders?: string[]; // Custom headers [Col1, Col2] or [Amount]
   ledgerDateHeader?: string; // Custom date/year heading for ledger layouts
+  ledgerVariant?: 'standard' | 't-account'; // Optional T-account presentation
 }
 
 export interface GameState {

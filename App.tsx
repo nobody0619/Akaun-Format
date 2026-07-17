@@ -183,6 +183,7 @@ export default function App() {
   const ledgerColumns = activeLevelConfig.ledgerColumns || 'double';
   const ledgerHeaders = activeLevelConfig.ledgerHeaders || ['Sarah', 'Helmi'];
   const ledgerDateHeader = activeLevelConfig.ledgerDateHeader || 'Tarikh';
+  const isTAccount = activeLevelConfig.ledgerVariant === 't-account';
 
   useEffect(() => {
     if (view !== 'game') return;
@@ -758,12 +759,13 @@ export default function App() {
 
     const renderSide = (sideConfig?: LedgerSideConfig, isRight?: boolean) => {
       if (!sideConfig) return null;
+      const amountDivider = !isRight && isTAccount ? borderRightThick : borderRight;
       if (isTotal) {
          return (
            <>
              <td className="bg-transparent border-r border-transparent"></td>
              <td className="bg-transparent border-r border-transparent"></td>
-             <td className={`${amountClasses} ${cellText} ${borderRight}`}>{sideConfig.col1}</td>
+             <td className={`${amountClasses} ${cellText} ${amountDivider}`}>{sideConfig.col1}</td>
              {!isSingleCol && (
                  <td className={`${amountClasses} ${cellText} ${isRight ? '' : borderRightThick}`}>{sideConfig.col2}</td>
              )}
@@ -779,7 +781,7 @@ export default function App() {
               : <div className="h-10 flex items-center px-2 font-semibold text-gray-700 text-sm">{sideConfig.staticLabel}</div>
             }
           </td>
-          <td className={`${amountClasses} ${cellText} ${borderRight}`}>{sideConfig.col1}</td>
+          <td className={`${amountClasses} ${cellText} ${amountDivider}`}>{sideConfig.col1}</td>
           {!isSingleCol && (
             <td className={`${amountClasses} ${cellText} ${isRight ? '' : borderRightThick}`}>{sideConfig.col2}</td>
           )}
@@ -934,12 +936,14 @@ export default function App() {
                 </tbody>
               </table>
             ) : layoutType === 'ledger' ? (
-              <table className="w-full text-sm border-collapse min-w-[800px]">
-                <thead className="bg-indigo-50 border-b-2 border-indigo-100">
-                  <tr>
-                    <th colSpan={isSingleCol ? 3 : 4} className="py-2 border-r border-gray-900 text-center font-bold text-indigo-900 uppercase tracking-wider">Debit</th>
-                    <th colSpan={isSingleCol ? 3 : 4} className="py-2 text-center font-bold text-indigo-900 uppercase tracking-wider">Credit</th>
-                  </tr>
+              <table className={`w-full text-sm border-collapse min-w-[800px] ${isTAccount ? "max-w-5xl mx-auto border-t-2 border-gray-900" : ""}`}>
+                <thead className={isTAccount ? "bg-white" : "bg-indigo-50 border-b-2 border-indigo-100"}>
+                  {!isTAccount && (
+                    <tr>
+                      <th colSpan={isSingleCol ? 3 : 4} className="py-2 border-r border-gray-900 text-center font-bold text-indigo-900 uppercase tracking-wider">Debit</th>
+                      <th colSpan={isSingleCol ? 3 : 4} className="py-2 text-center font-bold text-indigo-900 uppercase tracking-wider">Credit</th>
+                    </tr>
+                  )}
                   <tr className="text-xs text-gray-500 uppercase tracking-wider">
                     {/* LEFT HEADER */}
                     <th className="p-2 border-r border-gray-200">{ledgerDateHeader}</th>

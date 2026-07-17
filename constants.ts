@@ -1285,6 +1285,7 @@ export const LEVELS: LevelConfig[] = [
     ledgerColumns: 'single',
     ledgerHeaders: ['RM'],
     ledgerDateHeader: '2014',
+    ledgerVariant: 't-account',
     companyName: 'Akaun Belanja Am'
   },
   {
@@ -1296,6 +1297,7 @@ export const LEVELS: LevelConfig[] = [
     ledgerColumns: 'single',
     ledgerHeaders: ['RM'],
     ledgerDateHeader: '2014',
+    ledgerVariant: 't-account',
     companyName: 'Akaun Diskaun Diterima'
   },
   {
