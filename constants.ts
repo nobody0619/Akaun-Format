@@ -1278,7 +1278,7 @@ export const LEVELS: LevelConfig[] = [
   },
   {
     title: "Akaun Belanja",
-    subtitle: "",
+    subtitle: "Akaun Belanja Am",
     labels: LEVEL_BELANJA_LABELS,
     structure: LEVEL_BELANJA_STRUCTURE,
     layoutType: 'ledger',
@@ -1286,11 +1286,11 @@ export const LEVELS: LevelConfig[] = [
     ledgerHeaders: ['RM'],
     ledgerDateHeader: '2014',
     ledgerVariant: 't-account',
-    companyName: 'Akaun Belanja Am'
+    companyName: 'Akaun Belanja'
   },
   {
     title: "Akaun Hasil",
-    subtitle: "",
+    subtitle: "Akaun Diskaun Diterima",
     labels: LEVEL_HASIL_LABELS,
     structure: LEVEL_HASIL_STRUCTURE,
     layoutType: 'ledger',
@@ -1298,7 +1298,7 @@ export const LEVELS: LevelConfig[] = [
     ledgerHeaders: ['RM'],
     ledgerDateHeader: '2014',
     ledgerVariant: 't-account',
-    companyName: 'Akaun Diskaun Diterima'
+    companyName: 'Akaun Hasil'
   },
   {
     title: "Titik Pulang Modal",

@@ -907,7 +907,9 @@ export default function App() {
             <h2 className="font-extrabold text-xl md:text-2xl uppercase tracking-widest text-gray-900 mb-1">
               {activeLevelConfig.companyName || "Perniagaan Hakim Berjaya"}
             </h2>
-            <h3 className="font-semibold text-sm md:text-base text-gray-500 uppercase tracking-wide">{activeSubtitle}</h3>
+            {!isTAccount && activeSubtitle && (
+              <h3 className="font-semibold text-sm md:text-base text-gray-500 uppercase tracking-wide">{activeSubtitle}</h3>
+            )}
              <div className="flex items-center justify-center gap-4 mt-2">
                  <div className="flex items-center gap-1 text-sm font-bold text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
                     <Trophy className="w-4 h-4" /> Score: {gameState.score || 0}
@@ -936,7 +938,13 @@ export default function App() {
                 </tbody>
               </table>
             ) : layoutType === 'ledger' ? (
-              <table className={`w-full text-sm border-collapse min-w-[800px] ${isTAccount ? "max-w-5xl mx-auto border-t-2 border-gray-900 table-fixed" : ""}`}>
+              <>
+                {isTAccount && activeSubtitle && (
+                  <h3 className="text-center font-bold text-lg uppercase text-gray-900 mb-3">
+                    {activeSubtitle}
+                  </h3>
+                )}
+                <table className={`w-full text-sm border-collapse min-w-[800px] ${isTAccount ? "max-w-5xl mx-auto border-t-2 border-gray-900 table-fixed" : ""}`}>
                 {isTAccount && (
                   <colgroup>
                     <col className="w-[10%]" />
@@ -971,7 +979,8 @@ export default function App() {
                 <tbody>
                   {activeStructure.map(renderLedgerRow)}
                 </tbody>
-              </table>
+                </table>
+              </>
             ) : layoutType === 'formula' ? (
                 // Render only the current formula based on queue
                 renderFormula(activeStructure[quizQueue[currentQuizIndex]])
