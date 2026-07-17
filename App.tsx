@@ -182,6 +182,7 @@ export default function App() {
   const graphZones = activeLevelConfig.graphZones;
   const ledgerColumns = activeLevelConfig.ledgerColumns || 'double';
   const ledgerHeaders = activeLevelConfig.ledgerHeaders || ['Sarah', 'Helmi'];
+  const ledgerDateHeader = activeLevelConfig.ledgerDateHeader || 'Tarikh';
 
   useEffect(() => {
     if (view !== 'game') return;
@@ -941,13 +942,13 @@ export default function App() {
                   </tr>
                   <tr className="text-xs text-gray-500 uppercase tracking-wider">
                     {/* LEFT HEADER */}
-                    <th className="p-2 border-r border-gray-200">Tarikh</th>
+                    <th className="p-2 border-r border-gray-200">{ledgerDateHeader}</th>
                     <th className="p-2 border-r border-gray-200 w-1/4">Butiran</th>
                     <th className={`p-2 border-r ${isSingleCol ? 'border-gray-900' : 'border-gray-200'}`}>{headerCol1}</th>
                     {!isSingleCol && <th className="p-2 border-r border-gray-900">{headerCol2}</th>}
                     
                     {/* RIGHT HEADER */}
-                    <th className="p-2 border-r border-gray-200">Tarikh</th>
+                    <th className="p-2 border-r border-gray-200">{ledgerDateHeader}</th>
                     <th className="p-2 border-r border-gray-200 w-1/4">Butiran</th>
                     <th className={`p-2 ${isSingleCol ? '' : 'border-r border-gray-200'}`}>{headerCol1}</th>
                     {!isSingleCol && <th className="p-2">{headerCol2}</th>}

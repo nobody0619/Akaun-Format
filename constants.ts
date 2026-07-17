@@ -674,6 +674,66 @@ const LEVEL_8_STRUCTURE: RowConfig[] = [
   )
 ];
 
+// --- NEW LEVELS 9-10: ACCRUED/PREPAID LEDGERS ---
+
+const LEVEL_BELANJA_LABELS = [
+  'Belanja Am Prabayar',
+  'Bank',
+  'Belanja Am Belum Bayar',
+  'Belanja Am Belum Bayar',
+  'Akaun Untung Rugi',
+  'Belanja Am Prabayar'
+];
+
+const LEVEL_BELANJA_STRUCTURE: RowConfig[] = [
+  ledgerRow('belanja_r1',
+    { date: 'Jan 1', zone: { id: 'belanja_prabayar_awal', expectedLabels: ['Belanja Am Prabayar'], widthClass: 'w-full' }, col1: '128' },
+    { date: 'Jan 1', zone: { id: 'belanja_belum_bayar_awal', expectedLabels: ['Belanja Am Belum Bayar'], widthClass: 'w-full' }, col1: '333' }
+  ),
+  ledgerRow('belanja_r2',
+    { date: 'Dis 31', zone: { id: 'belanja_bank', expectedLabels: ['Bank'], widthClass: 'w-full' }, col1: '9900' },
+    { date: 'Dis 31', zone: { id: 'belanja_untung_rugi', expectedLabels: ['Akaun Untung Rugi'], widthClass: 'w-full' }, col1: '9929' }
+  ),
+  ledgerRow('belanja_r3',
+    { date: '', zone: { id: 'belanja_belum_bayar_akhir', expectedLabels: ['Belanja Am Belum Bayar'], widthClass: 'w-full' }, col1: '433' },
+    { date: '', zone: { id: 'belanja_prabayar_akhir', expectedLabels: ['Belanja Am Prabayar'], widthClass: 'w-full' }, col1: '199' }
+  ),
+  ledgerRow('belanja_total',
+    { date: '', staticLabel: '', col1: '10461' },
+    { date: '', staticLabel: '', col1: '10461' },
+    { isTotal: true }
+  )
+];
+
+const LEVEL_HASIL_LABELS = [
+  'Diskaun Belum Terima',
+  'Akaun Untung Rugi',
+  'Diskaun Belum Terperoleh',
+  'Diskaun Belum Terperoleh',
+  'Bank',
+  'Diskaun Belum Terima'
+];
+
+const LEVEL_HASIL_STRUCTURE: RowConfig[] = [
+  ledgerRow('hasil_r1',
+    { date: 'Jan 1', zone: { id: 'hasil_belum_terima_awal', expectedLabels: ['Diskaun Belum Terima'], widthClass: 'w-full' }, col1: '110' },
+    { date: 'Jan 1', zone: { id: 'hasil_belum_terperoleh_awal', expectedLabels: ['Diskaun Belum Terperoleh'], widthClass: 'w-full' }, col1: '138' }
+  ),
+  ledgerRow('hasil_r2',
+    { date: 'Dis 31', zone: { id: 'hasil_untung_rugi', expectedLabels: ['Akaun Untung Rugi'], widthClass: 'w-full' }, col1: '9019' },
+    { date: 'Dis 31', zone: { id: 'hasil_bank', expectedLabels: ['Bank'], widthClass: 'w-full' }, col1: '8987' }
+  ),
+  ledgerRow('hasil_r3',
+    { date: '', zone: { id: 'hasil_belum_terperoleh_akhir', expectedLabels: ['Diskaun Belum Terperoleh'], widthClass: 'w-full' }, col1: '121' },
+    { date: '', zone: { id: 'hasil_belum_terima_akhir', expectedLabels: ['Diskaun Belum Terima'], widthClass: 'w-full' }, col1: '125' }
+  ),
+  ledgerRow('hasil_total',
+    { date: '', staticLabel: '', col1: '9250' },
+    { date: '', staticLabel: '', col1: '9250' },
+    { isTotal: true }
+  )
+];
+
 // --- LEVEL 9: TITIK PULANG MODAL ---
 
 const LEVEL_9_LABELS = [
@@ -1215,6 +1275,28 @@ export const LEVELS: LevelConfig[] = [
     layoutType: 'ledger',
     ledgerColumns: 'double',
     ledgerHeaders: ['Sarah', 'Helmi']
+  },
+  {
+    title: "Akaun Belanja",
+    subtitle: "Akaun Belanja Am",
+    labels: LEVEL_BELANJA_LABELS,
+    structure: LEVEL_BELANJA_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM'],
+    ledgerDateHeader: '2014',
+    companyName: 'Akaun Belanja Am'
+  },
+  {
+    title: "Akaun Hasil",
+    subtitle: "Akaun Diskaun Diterima",
+    labels: LEVEL_HASIL_LABELS,
+    structure: LEVEL_HASIL_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM'],
+    ledgerDateHeader: '2014',
+    companyName: 'Akaun Diskaun Diterima'
   },
   {
     title: "Titik Pulang Modal",
