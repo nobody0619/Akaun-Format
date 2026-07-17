@@ -1278,7 +1278,7 @@ export const LEVELS: LevelConfig[] = [
   },
   {
     title: "Akaun Belanja",
-    subtitle: "Akaun Belanja Am",
+    subtitle: "",
     labels: LEVEL_BELANJA_LABELS,
     structure: LEVEL_BELANJA_STRUCTURE,
     layoutType: 'ledger',
@@ -1289,7 +1289,7 @@ export const LEVELS: LevelConfig[] = [
   },
   {
     title: "Akaun Hasil",
-    subtitle: "Akaun Diskaun Diterima",
+    subtitle: "",
     labels: LEVEL_HASIL_LABELS,
     structure: LEVEL_HASIL_STRUCTURE,
     layoutType: 'ledger',
