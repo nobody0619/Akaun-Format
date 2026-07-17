@@ -759,7 +759,13 @@ export default function App() {
 
     const renderSide = (sideConfig?: LedgerSideConfig, isRight?: boolean) => {
       if (!sideConfig) return null;
-      const amountDivider = !isRight && isTAccount ? borderRightThick : borderRight;
+      const cellDivider = isTAccount ? '' : borderRight;
+      const amountDivider = isTAccount
+        ? (!isRight && isSingleCol ? borderRightThick : '')
+        : borderRight;
+      const secondAmountDivider = isTAccount
+        ? (!isRight ? borderRightThick : '')
+        : (isRight ? '' : borderRightThick);
       if (isTotal) {
          return (
            <>
@@ -767,15 +773,15 @@ export default function App() {
              <td className="bg-transparent border-r border-transparent"></td>
              <td className={`${amountClasses} ${cellText} ${amountDivider}`}>{sideConfig.col1}</td>
              {!isSingleCol && (
-                 <td className={`${amountClasses} ${cellText} ${isRight ? '' : borderRightThick}`}>{sideConfig.col2}</td>
+                 <td className={`${amountClasses} ${cellText} ${secondAmountDivider}`}>{sideConfig.col2}</td>
              )}
            </>
          );
       }
       return (
         <>
-          <td className={`p-1 text-gray-500 text-xs font-mono text-center w-[10%] ${borderRight}`}>{sideConfig.date}</td>
-          <td className={`p-1 w-[50%] ${borderRight}`}>
+          <td className={`p-1 text-gray-500 text-xs font-mono text-center w-[10%] ${cellDivider}`}>{sideConfig.date}</td>
+          <td className={`p-1 w-[50%] ${cellDivider}`}>
             {sideConfig.zone 
               ? renderZone(sideConfig.zone, 0, null, true) 
               : <div className="h-10 flex items-center px-2 font-semibold text-gray-700 text-sm">{sideConfig.staticLabel}</div>
@@ -783,7 +789,7 @@ export default function App() {
           </td>
           <td className={`${amountClasses} ${cellText} ${amountDivider}`}>{sideConfig.col1}</td>
           {!isSingleCol && (
-            <td className={`${amountClasses} ${cellText} ${isRight ? '' : borderRightThick}`}>{sideConfig.col2}</td>
+            <td className={`${amountClasses} ${cellText} ${secondAmountDivider}`}>{sideConfig.col2}</td>
           )}
         </>
       );
@@ -905,11 +911,8 @@ export default function App() {
         <div className="flex-grow bg-white shadow-2xl rounded-lg overflow-hidden relative min-h-[600px] flex flex-col">
           <div className="text-center pt-8 pb-4 bg-white border-b border-gray-100 px-4">
             <h2 className="font-extrabold text-xl md:text-2xl uppercase tracking-widest text-gray-900 mb-1">
-              {activeLevelConfig.companyName || "Perniagaan Hakim Berjaya"}
+              {activeLevelConfig.title}
             </h2>
-            {!isTAccount && activeSubtitle && (
-              <h3 className="font-semibold text-sm md:text-base text-gray-500 uppercase tracking-wide">{activeSubtitle}</h3>
-            )}
              <div className="flex items-center justify-center gap-4 mt-2">
                  <div className="flex items-center gap-1 text-sm font-bold text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
                     <Trophy className="w-4 h-4" /> Score: {gameState.score || 0}
@@ -923,6 +926,11 @@ export default function App() {
           </div>
 
           <div className="overflow-x-auto p-4 md:p-8 flex-grow">
+            {activeSubtitle && (
+              <h3 className="text-center font-bold text-sm md:text-lg uppercase text-gray-900 mb-3 whitespace-nowrap">
+                {activeSubtitle}
+              </h3>
+            )}
             {layoutType === 'statement' ? (
               <table className="w-full text-sm md:text-base border-collapse min-w-[700px]">
                 <thead>
@@ -939,11 +947,6 @@ export default function App() {
               </table>
             ) : layoutType === 'ledger' ? (
               <>
-                {isTAccount && activeSubtitle && (
-                  <h3 className="text-center font-bold text-lg uppercase text-gray-900 mb-3">
-                    {activeSubtitle}
-                  </h3>
-                )}
                 <table className={`w-full text-sm border-collapse min-w-[800px] ${isTAccount ? "max-w-5xl mx-auto border-t-2 border-gray-900 table-fixed" : ""}`}>
                 {isTAccount && (
                   isSingleCol ? (
@@ -977,15 +980,15 @@ export default function App() {
                   )}
                   <tr className="text-xs text-gray-500 uppercase tracking-wider">
                     {/* LEFT HEADER */}
-                    <th className="p-2 border-r border-gray-200">{ledgerDateHeader}</th>
-                    <th className="p-2 border-r border-gray-200 w-1/4">Butiran</th>
-                    <th className={`p-2 border-r ${isSingleCol ? 'border-gray-900' : 'border-gray-200'}`}>{headerCol1}</th>
+                    <th className={`p-2 ${isTAccount ? '' : 'border-r border-gray-200'}`}>{ledgerDateHeader}</th>
+                    <th className={`p-2 w-1/4 ${isTAccount ? '' : 'border-r border-gray-200'}`}>Butiran</th>
+                    <th className={`p-2 ${isTAccount ? (isSingleCol ? 'border-r border-gray-900' : '') : `border-r ${isSingleCol ? 'border-gray-900' : 'border-gray-200'}`}`}>{headerCol1}</th>
                     {!isSingleCol && <th className="p-2 border-r border-gray-900">{headerCol2}</th>}
                     
                     {/* RIGHT HEADER */}
-                    <th className="p-2 border-r border-gray-200">{ledgerDateHeader}</th>
-                    <th className="p-2 border-r border-gray-200 w-1/4">Butiran</th>
-                    <th className={`p-2 ${isSingleCol ? '' : 'border-r border-gray-200'}`}>{headerCol1}</th>
+                    <th className={`p-2 ${isTAccount ? '' : 'border-r border-gray-200'}`}>{ledgerDateHeader}</th>
+                    <th className={`p-2 w-1/4 ${isTAccount ? '' : 'border-r border-gray-200'}`}>Butiran</th>
+                    <th className={`p-2 ${isTAccount ? '' : (isSingleCol ? '' : 'border-r border-gray-200')}`}>{headerCol1}</th>
                     {!isSingleCol && <th className="p-2">{headerCol2}</th>}
                   </tr>
                 </thead>
