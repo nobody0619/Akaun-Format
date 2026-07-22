@@ -805,81 +805,69 @@ export default function App() {
 
   const renderGraph = () => {
     if (!graphZones) return null;
+
     return (
-      // Changed: Removed overflow-hidden to allow labels to bleed out if needed, added padding logic via SVG positioning
-      <div className="relative w-full aspect-[4/3] bg-white rounded-lg shadow-inner border border-gray-200">
-        <svg viewBox="0 0 800 600" className="w-full h-full absolute inset-0 pointer-events-none">
+      <div className="relative w-full max-w-5xl mx-auto aspect-[4/3] bg-white rounded-lg shadow-inner border border-gray-200 overflow-hidden">
+        <svg viewBox="0 0 800 600" className="w-full h-full absolute inset-0 pointer-events-none" aria-hidden="true">
           <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e0f2fe" strokeWidth="1"/>
+            <pattern id="minor-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0f2fe" strokeWidth="1" />
             </pattern>
-            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-              <path d="M0,0 L0,6 L9,3 z" fill="black" />
+            <pattern id="major-grid" width="80" height="80" patternUnits="userSpaceOnUse">
+              <rect width="80" height="80" fill="url(#minor-grid)" />
+              <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#bae6fd" strokeWidth="1.5" />
+            </pattern>
+            <marker id="axis-arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#111827" />
             </marker>
-            <marker id="red-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-              <path d="M0,0 L0,6 L9,3 z" fill="#ef4444" />
+            <marker id="guide-arrow" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L9,3 z" fill="#f97316" />
             </marker>
           </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-          
-          {/* Main Axes (Shifted Origin to 100, 500) */}
-          <line x1="100" y1="500" x2="100" y2="50" stroke="black" strokeWidth="3" markerEnd="url(#arrow)" />
-          <line x1="100" y1="500" x2="750" y2="500" stroke="black" strokeWidth="3" markerEnd="url(#arrow)" />
-          
-          {/* Intersection Point: (400, 275) */}
-          
-          {/* Areas */}
-          {/* Profit Area (Blue): Between Rev and Cost above intersection */}
-          <polygon points="400,275 700,50 700,150" fill="rgba(59, 130, 246, 0.2)" stroke="none" />
-          {/* Loss Area (Red): Between Rev and Cost below intersection */}
-          <polygon points="100,500 100,400 400,275" fill="rgba(239, 68, 68, 0.2)" stroke="none" />
-          
-          {/* Graph Lines */}
-          {/* Fixed Cost (Flat): 100,400 -> 750,400 */}
-          <line x1="100" y1="400" x2="700" y2="400" stroke="#374151" strokeWidth="3" />
-          
-          {/* Total Cost: Starts at Fixed Cost (100, 400) -> Thru (400, 275) -> End (700, 150) */}
-          <line x1="100" y1="400" x2="700" y2="150" stroke="#1f2937" strokeWidth="3" />
-          
-          {/* Total Revenue: Starts at 0 (100, 500) -> Thru (400, 275) -> End (700, 50) */}
-          <line x1="100" y1="500" x2="700" y2="50" stroke="#111827" strokeWidth="3" />
-          
-          {/* Dashed Lines for Intersection */}
-          <line x1="400" y1="275" x2="400" y2="500" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5" />
-          <line x1="100" y1="275" x2="400" y2="275" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5" />
-          <circle cx="400" cy="275" r="4" fill="#ef4444" />
 
-          {/* Arrows */}
-          
-          {/* 1. Y-Axis Label Pointer (From HTML at 2%,0% -> approx 90,30) */}
-          <path d="M 120,50 L 105,40" fill="none" stroke="#ef4444" strokeWidth="2" markerEnd="url(#red-arrow)" />
+          <rect width="800" height="600" fill="#ffffff" />
+          <rect x="90" y="40" width="660" height="480" fill="url(#major-grid)" />
 
-          {/* 2. X-Axis Label Pointer (From HTML at 2%,0% -> approx 700,560) */}
-          <path d="M 700,550 L 720,520" fill="none" stroke="#ef4444" strokeWidth="2" markerEnd="url(#red-arrow)" />
+          {/* Loss and profit regions */}
+          <polygon points="90,440 90,520 310,360" fill="rgba(248, 113, 113, 0.30)" />
+          <polygon points="310,360 640,120 640,240" fill="rgba(96, 165, 250, 0.30)" />
 
-          {/* 3. TPM Pointer (Left to Intersection) */}
-          {/* TPM Box at left:5%, top:35% -> approx x=40, y=210. Intersection is 400,275 */}
-          <path d="M 220,230 L 390,270" fill="none" stroke="#ef4444" strokeWidth="2" markerEnd="url(#red-arrow)" />
+          {/* Axes */}
+          <line x1="90" y1="520" x2="90" y2="42" stroke="#111827" strokeWidth="3" markerEnd="url(#axis-arrow)" />
+          <line x1="90" y1="520" x2="752" y2="520" stroke="#111827" strokeWidth="3" markerEnd="url(#axis-arrow)" />
 
-          {/* 4. Untung (Top Mid -> Blue Area) */}
-          {/* Box at left:45%, top:15% -> approx x=360, y=90. Area center approx 550, 150 */}
-          {/* Updated target to (550, 185) to be solidly in the blue area */}
-          <path d="M 450,130 L 550,185" fill="none" stroke="#ef4444" strokeWidth="2" markerEnd="url(#red-arrow)" />
+          {/* Scale ticks and values */}
+          {[0, 1, 2, 3, 4, 5].map((value) => {
+            const x = 90 + value * 110;
+            return (
+              <g key={`x-tick-${value}`}>
+                <line x1={x} y1="520" x2={x} y2="527" stroke="#475569" strokeWidth="1.5" />
+                <text x={x} y="544" textAnchor="middle" fontSize="13" fill="#475569">{value}</text>
+              </g>
+            );
+          })}
+          {[5, 10, 15, 20, 25].map((value) => {
+            const y = 520 - (value / 5) * 80;
+            return (
+              <g key={`y-tick-${value}`}>
+                <line x1="83" y1={y} x2="90" y2={y} stroke="#475569" strokeWidth="1.5" />
+                <text x="76" y={y + 4} textAnchor="end" fontSize="13" fill="#475569">{value}</text>
+              </g>
+            );
+          })}
 
-          {/* 5. Rugi (Bottom Left -> Red Area) */}
-          {/* Box at left:15%, bottom:15% -> approx x=120, y=510. Area center approx 200, 390 */}
-          {/* Updated target to (220, 380) to be solidly in the red area */}
-          <path d="M 180,500 L 220,380" fill="none" stroke="#ef4444" strokeWidth="2" markerEnd="url(#red-arrow)" />
+          {/* Financial lines */}
+          <line x1="90" y1="440" x2="640" y2="440" stroke="#475569" strokeWidth="3" />
+          <line x1="90" y1="440" x2="640" y2="240" stroke="#1f2937" strokeWidth="3.5" />
+          <line x1="90" y1="520" x2="640" y2="120" stroke="#111827" strokeWidth="3.5" />
 
-          {/* 6. Jumlah Hasil (Top Right) */}
-          <path d="M 720,60 L 680,55" fill="none" stroke="#ef4444" strokeWidth="2" markerEnd="url(#red-arrow)" />
+          {/* Break-even guides */}
+          <line x1="90" y1="360" x2="310" y2="360" stroke="#ef4444" strokeWidth="2" strokeDasharray="7 7" />
+          <line x1="310" y1="360" x2="310" y2="520" stroke="#ef4444" strokeWidth="2" strokeDasharray="7 7" />
+          <circle cx="310" cy="360" r="6" fill="#ef4444" stroke="#ffffff" strokeWidth="2" />
 
-          {/* 7. Jumlah Kos (Mid Right) */}
-          <path d="M 720,160 L 680,155" fill="none" stroke="#ef4444" strokeWidth="2" markerEnd="url(#red-arrow)" />
-
-          {/* 8. Kos Tetap (Bottom Right) */}
-          <path d="M 720,440 L 680,405" fill="none" stroke="#ef4444" strokeWidth="2" markerEnd="url(#red-arrow)" />
-
+          {/* One short guide keeps the break-even slot unambiguous */}
+          <path d="M 236 330 L 300 355" fill="none" stroke="#f97316" strokeWidth="2.5" markerEnd="url(#guide-arrow)" />
         </svg>
         {graphZones.map((zone, idx) => renderZone(zone, idx, null))}
       </div>
