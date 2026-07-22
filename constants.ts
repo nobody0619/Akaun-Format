@@ -748,14 +748,14 @@ const LEVEL_9_LABELS = [
 ];
 
 const LEVEL_9_GRAPH_ZONES: DropZoneConfig[] = [
-  { id: 'g_y_axis', expectedLabels: ["Kos/Hasil (RM '000)"], widthClass: 'w-40', customStyle: { top: '1%', left: '1%' } },
-  { id: 'g_x_axis', expectedLabels: ["Pengeluaran ('000 unit)"], widthClass: 'w-52', customStyle: { bottom: '1%', right: '1%' } },
-  { id: 'g_jh', expectedLabels: ["Jumlah Hasil"], widthClass: 'w-32', customStyle: { top: '15%', right: '2%' } },
-  { id: 'g_jk', expectedLabels: ["Jumlah Kos"], widthClass: 'w-32', customStyle: { top: '35%', right: '2%' } },
-  { id: 'g_kt', expectedLabels: ["Kos Tetap"], widthClass: 'w-32', customStyle: { top: '68%', right: '2%' } },
-  { id: 'g_tpm', expectedLabels: ["Titik Pulang Modal"], widthClass: 'w-36', customStyle: { top: '47%', left: '13%' } },
-  { id: 'g_untung', expectedLabels: ["UNTUNG"], widthClass: 'w-28', customStyle: { top: '34%', left: '49%' } },
-  { id: 'g_rugi', expectedLabels: ["RUGI"], widthClass: 'w-24', customStyle: { top: '71%', left: '14%' } }
+  { id: 'g_y_axis', expectedLabels: ["Kos/Hasil (RM '000)"], widthClass: '', customStyle: { top: '1%', left: '1%', width: 'clamp(76px, 20%, 160px)' } },
+  { id: 'g_x_axis', expectedLabels: ["Pengeluaran ('000 unit)"], widthClass: '', customStyle: { bottom: '1%', right: '1%', width: 'clamp(90px, 26%, 208px)' } },
+  { id: 'g_jh', expectedLabels: ["Jumlah Hasil"], widthClass: '', customStyle: { top: '15%', right: '2%', width: 'clamp(64px, 16%, 128px)' } },
+  { id: 'g_jk', expectedLabels: ["Jumlah Kos"], widthClass: '', customStyle: { top: '35%', right: '2%', width: 'clamp(64px, 16%, 128px)' } },
+  { id: 'g_kt', expectedLabels: ["Kos Tetap"], widthClass: '', customStyle: { top: '68%', right: '2%', width: 'clamp(64px, 16%, 128px)' } },
+  { id: 'g_tpm', expectedLabels: ["Titik Pulang Modal"], widthClass: '', customStyle: { top: '47%', left: '13%', width: 'clamp(76px, 18%, 144px)' } },
+  { id: 'g_untung', expectedLabels: ["UNTUNG"], widthClass: '', customStyle: { top: '34%', left: '49%', width: 'clamp(56px, 14%, 112px)' } },
+  { id: 'g_rugi', expectedLabels: ["RUGI"], widthClass: '', customStyle: { top: '71%', left: '14%', width: 'clamp(52px, 12%, 96px)' } }
 ]
 
 // --- LEVEL 10: NISBAH KEWANGAN (FORMULAS) ---

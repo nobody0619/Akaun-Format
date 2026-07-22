@@ -602,18 +602,19 @@ export default function App() {
           onDrop={(e) => { e.preventDefault(); if (draggedItemId) attemptMove(zone, draggedItemId); }}
           style={style}
           className={`
-            ${isAbsolute ? 'absolute shadow-lg z-10' : 'relative'}
-            h-12 flex items-center justify-center rounded-md px-2 select-none transition-all duration-200 border-2
+            ${isAbsolute ? 'absolute shadow-lg z-10 h-8 sm:h-10 lg:h-12 px-1 sm:px-2' : 'relative h-12 px-2'}
+            flex items-center justify-center rounded-md select-none transition-all duration-200 border-2
+            ${isAbsolute && !content ? 'opacity-70 sm:opacity-90 lg:opacity-100' : 'opacity-100'}
             ${bgClass} ${textStyle} ${zone.widthClass} shadow-sm cursor-pointer
           `}
         >
           {content ? (
-            <span className="flex items-center gap-2 w-full justify-center animate-in fade-in zoom-in duration-200 whitespace-nowrap overflow-hidden font-semibold">
+            <span className={`flex items-center ${isAbsolute ? 'gap-1 text-[9px] sm:text-[11px] lg:text-sm' : 'gap-2'} w-full justify-center animate-in fade-in zoom-in duration-200 whitespace-nowrap overflow-hidden font-semibold`}>
               {content}
-              {status === 'correct' && <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />}
+              {status === 'correct' && <CheckCircle2 className={`${isAbsolute ? 'w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5' : 'w-5 h-5'} text-emerald-600 flex-shrink-0`} />}
             </span>
           ) : (
-            <span className="text-gray-400 text-xs font-medium w-full text-center tracking-wide uppercase">
+            <span className={`text-gray-400 ${isAbsolute ? 'text-[8px] sm:text-[10px] lg:text-xs' : 'text-xs'} font-medium w-full text-center tracking-wide uppercase`}>
                {status === 'wrong' ? "Incorrect" : (gameState.selectedItemId ? "Drop Here" : "")}
             </span>
           )}
