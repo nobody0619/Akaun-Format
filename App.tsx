@@ -1023,7 +1023,7 @@ export default function App() {
                       {currentStatementSectionConfig.title}
                     </h4>
                     <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-md whitespace-nowrap">
-                      Bahagian {currentStatementSection + 1} / {statementSections.length}
+                      Section {currentStatementSection + 1} / {statementSections.length}
                     </span>
                   </div>
                 )}
@@ -1046,7 +1046,7 @@ export default function App() {
                       onClick={handleNextStatementSection}
                       className="px-5 py-3 bg-indigo-600 text-white rounded-lg font-bold shadow-md hover:bg-indigo-700 transition-colors flex items-center gap-2"
                     >
-                      Bahagian Seterusnya <ArrowRight className="w-5 h-5" />
+                      Next Section <ArrowRight className="w-5 h-5" />
                     </button>
                   </div>
                 )}
