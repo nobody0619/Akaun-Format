@@ -715,7 +715,7 @@ export default function App() {
     
     return (
       <tr key={row.id} className="min-h-[3.5rem] hover:bg-slate-50 transition-colors group">
-        <td className="py-3 pr-4 w-3/5 pl-2">
+        <td className="py-3 pr-4 w-3/5 pl-2 align-middle">
           <div className={`flex items-center gap-2 ${indentClass} h-full border-b border-transparent group-hover:border-slate-200`}>
             {row.zones.map((zone, idx) => renderZone(zone, idx, row))}
           </div>
@@ -724,16 +724,21 @@ export default function App() {
         {[0, 1, 2].map((colIdx) => {
            const customZone = row.columnZones?.[colIdx];
            const isLastColumn = colIdx === 2;
+           const isActiveTotalColumn = row.columnIndex === colIdx && showDoubleLine;
            return (
-             <td key={colIdx} className={`w-[13%] align-bottom px-0 py-0 relative ${!isLastColumn ? 'border-r border-gray-100' : ''}`}>
-               <div className="flex flex-col justify-end w-full h-full px-2 py-3">
+             <td key={colIdx} className={`
+               w-[13%] align-middle px-0 py-0 relative
+               ${!isLastColumn ? 'border-r border-gray-100' : ''}
+               ${isActiveTotalColumn ? 'border-t border-gray-900' : ''}
+             `}>
+               <div className="flex items-center justify-end w-full h-12 px-2">
                   {customZone ? (
                      renderZone(customZone, 0, { ...row, isHeader: true, isUnderlined: false })
                   ) : (
                     <div className={`
                         w-full text-right font-mono-numbers text-lg text-gray-900 tracking-tight
                         ${row.columnIndex === colIdx && showRedLine ? "border-b border-gray-800" : ""}
-                        ${row.columnIndex === colIdx && showDoubleLine ? "border-b-4 border-double border-gray-900" : ""}
+                        ${isActiveTotalColumn ? "border-b-4 border-double border-gray-900" : ""}
                     `}>
                       {colIdx === row.columnIndex ? row.displayNumber : ""}
                     </div>
