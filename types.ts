@@ -37,6 +37,7 @@ export interface RowConfig {
   isSpacer?: boolean; 
   isItalic?: boolean; 
   isUnderlined?: boolean; 
+  underlineLabel?: boolean;
   columnZones?: { [key: number]: DropZoneConfig }; 
   
   // Ledger (Level 8, 12-14) Props

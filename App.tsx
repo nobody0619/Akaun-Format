@@ -754,7 +754,7 @@ export default function App() {
           `}
         >
           {content ? (
-            <span className={`flex items-center ${isAbsolute ? 'gap-1 text-[9px] sm:text-[11px] lg:text-sm' : 'gap-2'} w-full justify-center animate-in fade-in zoom-in duration-200 whitespace-nowrap overflow-hidden font-semibold`}>
+            <span className={`flex items-center ${isAbsolute ? 'gap-1 text-[9px] sm:text-[11px] lg:text-sm' : 'gap-2'} w-full justify-center animate-in fade-in zoom-in duration-200 whitespace-nowrap overflow-hidden font-semibold ${row?.underlineLabel && !isLedger ? 'underline decoration-2 underline-offset-4' : ''}`}>
               {content}
               {status === 'correct' && <CheckCircle2 className={`${isAbsolute ? 'w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5' : 'w-5 h-5'} text-emerald-600 flex-shrink-0`} />}
             </span>
