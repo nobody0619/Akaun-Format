@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { DraggableItem, RowConfig, DropZoneConfig, GameState, LedgerSideConfig } from './types';
 import { LEVELS } from './constants';
-import { FileQuestion, CheckCircle2, Award, GripVertical, ChevronRight, BookOpen, ArrowLeft, Play, User, Trophy, Send, Loader2, Home, ArrowRight } from 'lucide-react';
+import { FileQuestion, CheckCircle2, Award, GripVertical, ChevronRight, BookOpen, ArrowLeft, Play, User, Trophy, Send, Loader2, Home, ArrowRight, ZoomOut, ZoomIn, RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 // Reverted to executable Web App URL because /library/ URLs cannot receive POST requests
@@ -37,11 +37,19 @@ const makeDraggableItems = (labels: string[], level: number, key: string): Dragg
 const Header = ({ 
   currentLevel, 
   studentName, 
-  onBack 
+  onBack,
+  contentZoom,
+  onZoomOut,
+  onZoomIn,
+  onZoomReset
 }: { 
   currentLevel: number, 
   studentName: string, 
-  onBack: () => void 
+  onBack: () => void,
+  contentZoom: number,
+  onZoomOut: () => void,
+  onZoomIn: () => void,
+  onZoomReset: () => void
 }) => (
   <div className="bg-gradient-to-r from-gray-900 via-slate-800 to-gray-900 text-white p-4 md:p-6 shadow-xl z-20 relative border-b border-slate-700">
     <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
@@ -61,9 +69,47 @@ const Header = ({
         </div>
       </div>
       
-      <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10 text-center md:text-right">
-         <span className="text-xs text-slate-400 uppercase tracking-widest block">Current Level</span>
-         <span className="font-bold text-yellow-400">{LEVELS[currentLevel].title}</span>
+      <div className="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10 text-center md:text-right flex-grow">
+           <span className="text-xs text-slate-400 uppercase tracking-widest block">Current Level</span>
+           <span className="font-bold text-yellow-400">{LEVELS[currentLevel].title}</span>
+        </div>
+
+        <div className="bg-white/10 border border-white/10 rounded-lg p-1 flex items-center justify-center gap-1" aria-label="Page zoom controls">
+          <button
+            type="button"
+            onClick={onZoomOut}
+            disabled={contentZoom <= 0.4}
+            className="w-9 h-9 flex items-center justify-center rounded-md text-slate-200 hover:bg-white/10 hover:text-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+            title="Zoom out"
+            aria-label="Zoom out"
+          >
+            <ZoomOut className="w-5 h-5" />
+          </button>
+          <span className="w-12 text-center text-xs font-bold text-white tabular-nums">
+            {Math.round(contentZoom * 100)}%
+          </span>
+          <button
+            type="button"
+            onClick={onZoomReset}
+            disabled={contentZoom === 1}
+            className="w-9 h-9 flex items-center justify-center rounded-md text-slate-200 hover:bg-white/10 hover:text-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+            title="Reset zoom"
+            aria-label="Reset zoom"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={onZoomIn}
+            disabled={contentZoom >= 1.5}
+            className="w-9 h-9 flex items-center justify-center rounded-md text-slate-200 hover:bg-white/10 hover:text-white disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+            title="Zoom in"
+            aria-label="Zoom in"
+          >
+            <ZoomIn className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -171,6 +217,7 @@ export default function App() {
   const [view, setView] = useState<ViewState>('welcome');
   const [studentName, setStudentName] = useState('');
   const [currentLevel, setCurrentLevel] = useState(0);
+  const [contentZoom, setContentZoom] = useState(1);
   
   // Scoring State
   const [startTime, setStartTime] = useState(Date.now());
@@ -989,9 +1036,24 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-200 select-none font-sans">
-      <Header currentLevel={currentLevel} studentName={studentName} onBack={() => setView('selection')} />
+      <Header
+        currentLevel={currentLevel}
+        studentName={studentName}
+        onBack={() => setView('selection')}
+        contentZoom={contentZoom}
+        onZoomOut={() => setContentZoom(value => Math.max(0.4, Number((value - 0.1).toFixed(1))))}
+        onZoomIn={() => setContentZoom(value => Math.min(1.5, Number((value + 0.1).toFixed(1))))}
+        onZoomReset={() => setContentZoom(1)}
+      />
 
-      <main className="flex-grow p-4 md:p-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto w-full">
+      <main
+        className="flex-grow p-4 md:p-8 flex flex-col lg:flex-row gap-8 mx-auto"
+        style={{
+          zoom: contentZoom,
+          width: `${100 / contentZoom}%`,
+          maxWidth: 'none'
+        }}
+      >
         <div className="flex-grow bg-white shadow-2xl rounded-lg overflow-hidden relative min-h-[600px] flex flex-col">
           <div className="text-center pt-8 pb-4 bg-white border-b border-gray-100 px-4">
             <h2 className="font-extrabold text-xl md:text-2xl uppercase tracking-widest text-gray-900 mb-1">
