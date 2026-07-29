@@ -1047,12 +1047,8 @@ export default function App() {
       />
 
       <main
-        className="flex-grow p-4 md:p-8 flex flex-col lg:flex-row gap-8 mx-auto"
-        style={{
-          zoom: contentZoom,
-          width: `${100 / contentZoom}%`,
-          maxWidth: 'none'
-        }}
+        className="flex-grow p-4 md:p-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto w-full"
+        style={{ zoom: contentZoom }}
       >
         <div className="flex-grow bg-white shadow-2xl rounded-lg overflow-hidden relative min-h-[600px] flex flex-col">
           <div className="text-center pt-8 pb-4 bg-white border-b border-gray-100 px-4">
