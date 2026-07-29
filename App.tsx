@@ -275,6 +275,17 @@ export default function App() {
       : activeStructure,
     [activeStructure, currentStatementSectionConfig, isSectionedStatement]
   );
+  const underlinedItemLabels = useMemo(
+    () => new Set(
+      activeStructure
+        .filter(row => row.underlineLabel)
+        .flatMap(row => [
+          ...row.zones.flatMap(zone => zone.expectedLabels),
+          ...Object.values(row.columnZones || {}).flatMap(zone => zone.expectedLabels)
+        ])
+    ),
+    [activeStructure]
+  );
 
   useEffect(() => {
     if (view !== 'game') return;
@@ -1248,7 +1259,7 @@ export default function App() {
                         ${isDragging ? 'opacity-40 grayscale' : 'opacity-100'}
                       `}
                     >
-                      <span className="truncate mr-2">{item.label}</span>
+                      <span className={`truncate mr-2 ${underlinedItemLabels.has(item.label) ? 'underline decoration-2 underline-offset-4' : ''}`}>{item.label}</span>
                       {item.isClone ? (
                         <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded border border-red-200 font-bold uppercase tracking-wider">Penalty</span>
                       ) : (
