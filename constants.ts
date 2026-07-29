@@ -44,6 +44,18 @@ const guidedOperatorRow = (id: string, op: string, label: string, num: string, c
   ...opts
 });
 
+const guidedSwappableOperatorRow = (id: string, op: string, validLabels: string[], groupName: string, num: string, col: 0|1|2, indent = 0, opts: Partial<RowConfig> = {}): RowConfig => ({
+  id,
+  zones: [
+    { id: `${id}_op_static`, expectedLabels: [], widthClass: 'w-20', placeholder: op, isStaticText: true },
+    { id: `${id}_item`, expectedLabels: validLabels, widthClass: 'flex-1', group: groupName }
+  ],
+  displayNumber: num,
+  columnIndex: col,
+  indent,
+  ...opts
+});
+
 const swappableRow = (id: string, validLabels: string[], groupName: string, num: string, col: 0|1|2, indent = 0, opts: Partial<RowConfig> = {}): RowConfig => ({
   id,
   zones: [{ id: `${id}_zone`, expectedLabels: validLabels, widthClass: 'w-full', group: groupName }],
@@ -1227,6 +1239,40 @@ const amountOnlyRow = (id: string, num: string, col: 0|1|2, opts: Partial<RowCon
   ...opts
 });
 
+const getStructureLabels = (structure: RowConfig[]): string[] => {
+  const seenGroups = new Set<string>();
+
+  return structure
+    .flatMap(row => [...row.zones, ...Object.values(row.columnZones || {})])
+    .flatMap(zone => {
+      if (zone.expectedLabels.length === 0) return [];
+      if (!zone.group) return zone.expectedLabels;
+      if (seenGroups.has(zone.group)) return [];
+
+      seenGroups.add(zone.group);
+      return zone.expectedLabels;
+    });
+};
+
+const l20_bahan_additions = [
+  'Angkutan masuk bahan langsung',
+  'Duti atas belian bahan langsung'
+];
+
+const l20_direct_expenses = ['Paten', 'Hak cipta', 'Royalti'];
+
+const l20_overhead_items = [
+  'Alat tulis kilang',
+  'Gaji pengurus kilang',
+  'Belanja pembaikan kilang',
+  'Belanja Am kilang',
+  'Insurans kilang',
+  'Kadar bayaran kilang',
+  'Sewa kilang',
+  'Susut nilai Mesin',
+  'Belanja alat-alat kecil'
+];
+
 const LEVEL_20_STRUCTURE: RowConfig[] = [
   headerRow('l20_bahan_header', 'Kos Bahan Langsung', { isUnderlined: false }),
   single('l20_inv_awal_bahan', 'Inventori Awal bahan langsung', 'X', 2),
@@ -1236,8 +1282,8 @@ const LEVEL_20_STRUCTURE: RowConfig[] = [
   single('l20_belian_bahan', 'Belian bahan langsung', 'X', 1),
   guidedOperatorRow('l20_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(X)', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l20_belian_bersih', 'X', 1),
-  guidedOperatorRow('l20_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'X', 1),
-  single('l20_duti_bahan', 'Duti atas belian bahan langsung', 'X', 1, 1, { hasBottomBorder: true }),
+  guidedSwappableOperatorRow('l20_angkutan_bahan', 'Tambah', l20_bahan_additions, 'l20_bahan_additions', 'X', 1),
+  swappableRow('l20_duti_bahan', l20_bahan_additions, 'l20_bahan_additions', 'X', 1, 1, { hasBottomBorder: true }),
   amountOnlyRow('l20_kos_belian_bahan', 'X', 2),
   guidedOperatorRow('l20_inv_akhir_bahan', 'Tolak', 'Inventori Akhir bahan langsung', 'X', 1),
   single('l20_kdp_akhir_bahan', 'Kerja dalam proses akhir', 'X', 1, 1, { hasBottomBorder: true }),
@@ -1252,21 +1298,21 @@ const LEVEL_20_STRUCTURE: RowConfig[] = [
   single('l20_kos_buruh', 'Kos buruh langsung', 'XX', 2, 0, { isHeader: true }),
 
   headerRow('l20_belanja_header', 'Belanja langsung', { isUnderlined: false }),
-  single('l20_paten', 'Paten', 'X', 1),
-  single('l20_hak_cipta', 'Hak cipta', 'X', 1),
-  single('l20_royalti', 'Royalti', 'X', 1, 0, { hasBottomBorder: true }),
+  swappableRow('l20_paten', l20_direct_expenses, 'l20_direct_expenses', 'X', 1),
+  swappableRow('l20_hak_cipta', l20_direct_expenses, 'l20_direct_expenses', 'X', 1),
+  swappableRow('l20_royalti', l20_direct_expenses, 'l20_direct_expenses', 'X', 1, 0, { hasBottomBorder: true }),
   single('l20_kos_prima', 'Kos Prima', 'XX', 2, 0, { isHeader: true }),
 
   headerRow('l20_overhed_header', 'Kos Overhed', { isUnderlined: false }),
-  single('l20_alat_tulis', 'Alat tulis kilang', 'X', 1),
-  single('l20_gaji_pengurus', 'Gaji pengurus kilang', 'X', 1),
-  single('l20_pembaikan', 'Belanja pembaikan kilang', 'X', 1),
-  single('l20_belanja_am', 'Belanja Am kilang', 'X', 1),
-  single('l20_insurans', 'Insurans kilang', 'X', 1),
-  single('l20_kadar_bayaran', 'Kadar bayaran kilang', 'X', 1),
-  single('l20_sewa', 'Sewa kilang', 'X', 1),
-  single('l20_susut_mesin', 'Susut nilai Mesin', 'X', 1),
-  single('l20_alat_kecil', 'Belanja alat-alat kecil', 'X', 1, 0, { hasBottomBorder: true }),
+  swappableRow('l20_alat_tulis', l20_overhead_items, 'l20_overhead_items', 'X', 1),
+  swappableRow('l20_gaji_pengurus', l20_overhead_items, 'l20_overhead_items', 'X', 1),
+  swappableRow('l20_pembaikan', l20_overhead_items, 'l20_overhead_items', 'X', 1),
+  swappableRow('l20_belanja_am', l20_overhead_items, 'l20_overhead_items', 'X', 1),
+  swappableRow('l20_insurans', l20_overhead_items, 'l20_overhead_items', 'X', 1),
+  swappableRow('l20_kadar_bayaran', l20_overhead_items, 'l20_overhead_items', 'X', 1),
+  swappableRow('l20_sewa', l20_overhead_items, 'l20_overhead_items', 'X', 1),
+  swappableRow('l20_susut_mesin', l20_overhead_items, 'l20_overhead_items', 'X', 1),
+  swappableRow('l20_alat_kecil', l20_overhead_items, 'l20_overhead_items', 'X', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l20_overhed_total', 'X', 1),
   guidedOperatorRow('l20_kdp_awal_overhed', 'Tambah', 'Kerja dalam proses awal', 'X', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l20_overhed_tambah_total', 'X', 1),
@@ -1274,12 +1320,21 @@ const LEVEL_20_STRUCTURE: RowConfig[] = [
   single('l20_kos_pengeluaran', 'Kos Pengeluaran', 'XX', 2, 0, { isTotal: true, isHeader: true })
 ];
 
-const LEVEL_20_LABELS = LEVEL_20_STRUCTURE.flatMap(row =>
-  row.zones.flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : [])
-);
+const LEVEL_20_LABELS = getStructureLabels(LEVEL_20_STRUCTURE);
 
 
 // --- LEVEL 21: KOS PENGELUARAN ---
+
+const l21_overhead_items = [
+  'Susut nilai Mesin',
+  'Susut nilai Alatan',
+  'Upah tak langsung',
+  'Belanja alat-alat kecil',
+  'Sewa kilang',
+  'Insurans kilang',
+  'Kadar bayaran kilang',
+  'Belanja penyelenggaraan mesin'
+];
 
 const LEVEL_21_STRUCTURE: RowConfig[] = [
   headerRow('l21_bahan_header', 'Kos Bahan Langsung', { isUnderlined: false }),
@@ -1300,14 +1355,14 @@ const LEVEL_21_STRUCTURE: RowConfig[] = [
   single('l21_kos_prima', 'Kos Prima', 'xx', 2, 0, { isHeader: true }),
 
   headerRow('l21_overhed_header', 'Kos Overhed', { isUnderlined: false }),
-  single('l21_susut_mesin', 'Susut nilai Mesin', 'x', 1),
-  single('l21_susut_alatan', 'Susut nilai Alatan', 'x', 1),
-  single('l21_upah_tak_langsung', 'Upah tak langsung', 'x', 1),
-  single('l21_alat_kecil', 'Belanja alat-alat kecil', 'x', 1),
-  single('l21_sewa', 'Sewa kilang', 'x', 1),
-  single('l21_insurans', 'Insurans kilang', 'x', 1),
-  single('l21_kadar_bayaran', 'Kadar bayaran kilang', 'x', 1),
-  single('l21_penyelenggaraan', 'Belanja penyelenggaraan mesin', 'x', 1, 0, { hasBottomBorder: true }),
+  swappableRow('l21_susut_mesin', l21_overhead_items, 'l21_overhead_items', 'x', 1),
+  swappableRow('l21_susut_alatan', l21_overhead_items, 'l21_overhead_items', 'x', 1),
+  swappableRow('l21_upah_tak_langsung', l21_overhead_items, 'l21_overhead_items', 'x', 1),
+  swappableRow('l21_alat_kecil', l21_overhead_items, 'l21_overhead_items', 'x', 1),
+  swappableRow('l21_sewa', l21_overhead_items, 'l21_overhead_items', 'x', 1),
+  swappableRow('l21_insurans', l21_overhead_items, 'l21_overhead_items', 'x', 1),
+  swappableRow('l21_kadar_bayaran', l21_overhead_items, 'l21_overhead_items', 'x', 1),
+  swappableRow('l21_penyelenggaraan', l21_overhead_items, 'l21_overhead_items', 'x', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_overhed_total', 'xx', 2),
   amountOnlyRow('l21_kos_sebelum_kdp', 'xx', 2),
   guidedOperatorRow('l21_kdp_awal', 'Tambah', 'Kerja dalam proses awal', 'x', 1, 0, { hasBottomBorder: true }),
@@ -1316,9 +1371,7 @@ const LEVEL_21_STRUCTURE: RowConfig[] = [
   single('l21_kos_pengeluaran', 'Kos Pengeluaran', 'xxx', 2, 0, { isTotal: true, isHeader: true })
 ];
 
-const LEVEL_21_LABELS = LEVEL_21_STRUCTURE.flatMap(row =>
-  row.zones.flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : [])
-);
+const LEVEL_21_LABELS = getStructureLabels(LEVEL_21_STRUCTURE);
 
 
 // --- LEVEL 22: AKAUN PERDAGANGAN (KOS PENGELUARAN) ---

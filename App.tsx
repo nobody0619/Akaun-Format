@@ -21,11 +21,20 @@ const getStatementSectionRows = (structure: RowConfig[], section?: StatementSect
   return structure.slice(startIndex, endIndex + 1);
 };
 
-const getStatementLabels = (structure: RowConfig[]): string[] =>
-  structure.flatMap(row => [
-    ...row.zones.flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : []),
-    ...Object.values(row.columnZones || {}).flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : [])
-  ]);
+const getStatementLabels = (structure: RowConfig[]): string[] => {
+  const seenGroups = new Set<string>();
+
+  return structure
+    .flatMap(row => [...row.zones, ...Object.values(row.columnZones || {})])
+    .flatMap(zone => {
+      if (zone.expectedLabels.length === 0) return [];
+      if (!zone.group) return zone.expectedLabels;
+      if (seenGroups.has(zone.group)) return [];
+
+      seenGroups.add(zone.group);
+      return zone.expectedLabels;
+    });
+};
 
 const makeDraggableItems = (labels: string[], level: number, key: string): DraggableItem[] =>
   labels.map((label, index) => ({
