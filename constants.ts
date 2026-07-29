@@ -1204,6 +1204,139 @@ const LEVEL_17_STRUCTURE: RowConfig[] = [
 ];
 
 
+// --- LEVEL 20: KOS PENGELUARAN (KERJA DALAM PROSES DIASINGKAN) ---
+
+const amountOnlyRow = (id: string, num: string, col: 0|1|2, opts: Partial<RowConfig> = {}): RowConfig => ({
+  id,
+  zones: [],
+  displayNumber: num,
+  columnIndex: col,
+  isSpacer: true,
+  ...opts
+});
+
+const LEVEL_20_STRUCTURE: RowConfig[] = [
+  headerRow('l20_bahan_header', 'Kos Bahan Langsung', { isUnderlined: false }),
+  single('l20_inv_awal_bahan', 'Inventori Awal bahan langsung', 'X', 2),
+  single('l20_kdp_awal_bahan', 'Kerja dalam proses awal', 'X', 2, 1, { hasBottomBorder: true }),
+  amountOnlyRow('l20_bahan_awal_total', 'X', 2),
+
+  single('l20_belian_bahan', 'Belian bahan langsung', 'X', 1),
+  operatorRow('l20_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(X)', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l20_belian_bersih', 'X', 1),
+  operatorRow('l20_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'X', 1),
+  single('l20_duti_bahan', 'Duti atas belian bahan langsung', 'X', 1, 1, { hasBottomBorder: true }),
+  amountOnlyRow('l20_kos_belian_bahan', 'X', 2),
+  operatorRow('l20_inv_akhir_bahan', 'Tolak', 'Inventori Akhir bahan langsung', 'X', 1),
+  single('l20_kdp_akhir_bahan', 'Kerja dalam proses akhir', 'X', 1, 1, { hasBottomBorder: true }),
+  amountOnlyRow('l20_bahan_akhir_total', '(X)', 2, { hasBottomBorder: true }),
+  single('l20_kos_bahan_digunakan', 'Kos bahan langsung digunakan', 'XX', 2, 0, { isHeader: true }),
+
+  headerRow('l20_buruh_header', 'Kos Buruh Langsung', { isUnderlined: false }),
+  single('l20_buruh_langsung', 'Buruh langsung', 'X', 1),
+  operatorRow('l20_kdp_awal_buruh', 'Tambah', 'Kerja dalam proses awal', 'X', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l20_buruh_tambah_total', 'X', 1),
+  operatorRow('l20_kdp_akhir_buruh', 'Tolak', 'Kerja dalam proses akhir', '(X)', 1, 0, { hasBottomBorder: true }),
+  single('l20_kos_buruh', 'Kos buruh langsung', 'XX', 2, 0, { isHeader: true }),
+
+  headerRow('l20_belanja_header', 'Belanja langsung', { isUnderlined: false }),
+  single('l20_paten', 'Paten', 'X', 1),
+  single('l20_hak_cipta', 'Hak cipta', 'X', 1),
+  single('l20_royalti', 'Royalti', 'X', 1, 0, { hasBottomBorder: true }),
+  single('l20_kos_prima', 'Kos Prima', 'XX', 2, 0, { isHeader: true }),
+
+  headerRow('l20_overhed_header', 'Kos Overhed', { isUnderlined: false }),
+  single('l20_alat_tulis', 'Alat tulis kilang', 'X', 1),
+  single('l20_gaji_pengurus', 'Gaji pengurus kilang', 'X', 1),
+  single('l20_pembaikan', 'Belanja pembaikan kilang', 'X', 1),
+  single('l20_belanja_am', 'Belanja Am kilang', 'X', 1),
+  single('l20_insurans', 'Insurans kilang', 'X', 1),
+  single('l20_kadar_bayaran', 'Kadar bayaran kilang', 'X', 1),
+  single('l20_sewa', 'Sewa kilang', 'X', 1),
+  single('l20_susut_mesin', 'Susut nilai Mesin', 'X', 1),
+  single('l20_alat_kecil', 'Belanja alat-alat kecil', 'X', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l20_overhed_total', 'X', 1),
+  operatorRow('l20_kdp_awal_overhed', 'Tambah', 'Kerja dalam proses awal', 'X', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l20_overhed_tambah_total', 'X', 1),
+  operatorRow('l20_kdp_akhir_overhed', 'Tolak', 'Kerja dalam proses akhir', '(X)', 1, 0, { hasBottomBorder: true }),
+  single('l20_kos_pengeluaran', 'Kos Pengeluaran', 'XX', 2, 0, { isTotal: true, isHeader: true })
+];
+
+const LEVEL_20_LABELS = LEVEL_20_STRUCTURE.flatMap(row =>
+  row.zones.flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : [])
+);
+
+
+// --- LEVEL 21: KOS PENGELUARAN ---
+
+const LEVEL_21_STRUCTURE: RowConfig[] = [
+  headerRow('l21_bahan_header', 'Kos Bahan Langsung', { isUnderlined: false }),
+  single('l21_inv_awal_bahan', 'Inventori awal bahan langsung', 'XX', 2),
+  single('l21_belian_bahan', 'Belian bahan langsung', 'XX', 1),
+  operatorRow('l21_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(XX)', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l21_belian_bersih', 'XX', 1),
+  operatorRow('l21_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'XX', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l21_kos_belian', 'XX', 2),
+  operatorRow('l21_inv_akhir_bahan', 'Tolak', 'Inventori akhir bahan langsung', '(XX)', 2, 0, { hasBottomBorder: true }),
+  single('l21_kos_bahan_digunakan', 'Kos bahan langsung digunakan', 'XX', 2, 0, { isHeader: true }),
+
+  headerRow('l21_buruh_header', 'Kos Buruh Langsung', { isUnderlined: false }),
+  single('l21_upah_langsung', 'Upah langsung', 'XX', 2),
+
+  headerRow('l21_belanja_header', 'Belanja langsung', { isUnderlined: false }),
+  single('l21_hak_cipta', 'Hak cipta', 'XX', 1, 0, { hasBottomBorder: true }),
+  single('l21_kos_prima', 'Kos Prima', 'XX', 2, 0, { isHeader: true }),
+
+  headerRow('l21_overhed_header', 'Kos Overhed', { isUnderlined: false }),
+  single('l21_susut_mesin', 'Susut nilai Mesin', 'XX', 1),
+  single('l21_susut_alatan', 'Susut nilai Alatan', 'XX', 1),
+  single('l21_upah_tak_langsung', 'Upah tak langsung', 'XX', 1),
+  single('l21_alat_kecil', 'Belanja alat-alat kecil', 'XX', 1),
+  single('l21_sewa', 'Sewa kilang', 'XX', 1),
+  single('l21_insurans', 'Insurans kilang', 'XX', 1),
+  single('l21_kadar_bayaran', 'Kadar bayaran kilang', 'XX', 1),
+  single('l21_penyelenggaraan', 'Belanja penyelenggaraan mesin', 'XX', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l21_overhed_total', 'XX', 2),
+  amountOnlyRow('l21_kos_sebelum_kdp', 'XX', 2),
+  operatorRow('l21_kdp_awal', 'Tambah', 'Kerja dalam proses awal', 'XX', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l21_kdp_tambah_total', 'XX', 2),
+  operatorRow('l21_kdp_akhir', 'Tolak', 'Kerja dalam proses akhir', '(XX)', 2, 0, { hasBottomBorder: true }),
+  single('l21_kos_pengeluaran', 'Kos Pengeluaran', 'XX', 2, 0, { isTotal: true, isHeader: true })
+];
+
+const LEVEL_21_LABELS = LEVEL_21_STRUCTURE.flatMap(row =>
+  row.zones.flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : [])
+);
+
+
+// --- LEVEL 22: AKAUN PERDAGANGAN (KOS PENGELUARAN) ---
+
+const LEVEL_22_STRUCTURE: RowConfig[] = [
+  single('l22_jualan', 'Jualan', 'XX', 2),
+  {
+    id: 'l22_kos_jualan_header',
+    zones: [
+      { id: 'l22_kos_jualan_op', expectedLabels: ['Tolak'], widthClass: 'w-20' },
+      { id: 'l22_kos_jualan_item', expectedLabels: ['Kos Jualan'], widthClass: 'flex-1' }
+    ],
+    displayNumber: '',
+    columnIndex: 0,
+    isHeader: true
+  },
+  single('l22_inv_awal_barang', 'Inventori Awal barang siap', 'XX', 1),
+  single('l22_belian_barang', 'Belian barang siap', 'XX', 0),
+  single('l22_kos_pengeluaran', 'Kos Pengeluaran', 'XX', 0, 0, { hasBottomBorder: true }),
+  single('l22_kos_barang_siap', 'Kos barang siap', 'XX', 1),
+  operatorRow('l22_inv_akhir_barang', 'Tolak', 'Inventori Akhir barang siap', '(XX)', 1, 0, { hasBottomBorder: true }),
+  single('l22_kos_jualan', 'Kos Jualan', '(XX)', 2, 0, { hasBottomBorder: true }),
+  single('l22_untung_kasar', 'Untung Kasar', 'XX', 2, 0, { isTotal: true, isHeader: true })
+];
+
+const LEVEL_22_LABELS = LEVEL_22_STRUCTURE.flatMap(row =>
+  row.zones.flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : [])
+);
+
+
 export const LEVELS: LevelConfig[] = [
   {
     title: "Akaun Perdagangan",
@@ -1363,6 +1496,27 @@ export const LEVELS: LevelConfig[] = [
     structure: LEVEL_17_STRUCTURE,
     layoutType: 'statement',
     companyName: 'Kelab Badminton Taman Bukit Katil Kenari'
+  },
+  {
+    title: "Kos Pengeluaran (Kerja dalam proses diasingkan)",
+    subtitle: "Akaun Pengeluaran bagi tahun berakhir ...",
+    labels: LEVEL_20_LABELS,
+    structure: LEVEL_20_STRUCTURE,
+    layoutType: 'statement'
+  },
+  {
+    title: "Kos Pengeluaran",
+    subtitle: "Akaun Pengeluaran bagi tahun berakhir 31 Ogos 2017",
+    labels: LEVEL_21_LABELS,
+    structure: LEVEL_21_STRUCTURE,
+    layoutType: 'statement'
+  },
+  {
+    title: "Akaun Perdagangan (Kos Pengeluaran)",
+    subtitle: "Akaun Perdagangan bagi tahun berakhir 31 Ogos 2017",
+    labels: LEVEL_22_LABELS,
+    structure: LEVEL_22_STRUCTURE,
+    layoutType: 'statement'
   }
 ];
 
