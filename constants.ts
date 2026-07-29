@@ -1271,37 +1271,37 @@ const LEVEL_20_LABELS = LEVEL_20_STRUCTURE.flatMap(row =>
 
 const LEVEL_21_STRUCTURE: RowConfig[] = [
   headerRow('l21_bahan_header', 'Kos Bahan Langsung', { isUnderlined: false }),
-  single('l21_inv_awal_bahan', 'Inventori awal bahan langsung', 'xx', 2),
-  single('l21_belian_bahan', 'Belian bahan langsung', 'xx', 1),
-  operatorRow('l21_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(xx)', 1, 0, { hasBottomBorder: true }),
+  single('l21_inv_awal_bahan', 'Inventori awal bahan langsung', 'x', 2),
+  single('l21_belian_bahan', 'Belian bahan langsung', 'x', 1),
+  operatorRow('l21_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(x)', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_belian_bersih', 'xx', 1),
-  operatorRow('l21_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'xx', 1, 0, { hasBottomBorder: true }),
+  operatorRow('l21_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'x', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_kos_belian', 'xx', 2),
-  operatorRow('l21_inv_akhir_bahan', 'Tolak', 'Inventori akhir bahan langsung', '(xx)', 2, 0, { hasBottomBorder: true }),
+  operatorRow('l21_inv_akhir_bahan', 'Tolak', 'Inventori akhir bahan langsung', '(x)', 2, 0, { hasBottomBorder: true }),
   single('l21_kos_bahan_digunakan', 'Kos bahan langsung digunakan', 'xx', 2, 0, { isHeader: true }),
 
   headerRow('l21_buruh_header', 'Kos Buruh Langsung', { isUnderlined: false }),
-  single('l21_upah_langsung', 'Upah langsung', 'xx', 2),
+  single('l21_upah_langsung', 'Upah langsung', 'x', 2),
 
   headerRow('l21_belanja_header', 'Belanja langsung', { isUnderlined: false }),
-  single('l21_hak_cipta', 'Hak cipta', 'xx', 1, 0, { hasBottomBorder: true }),
+  single('l21_hak_cipta', 'Hak cipta', 'x', 1, 0, { hasBottomBorder: true }),
   single('l21_kos_prima', 'Kos Prima', 'xx', 2, 0, { isHeader: true }),
 
   headerRow('l21_overhed_header', 'Kos Overhed', { isUnderlined: false }),
-  single('l21_susut_mesin', 'Susut nilai Mesin', 'xx', 1),
-  single('l21_susut_alatan', 'Susut nilai Alatan', 'xx', 1),
-  single('l21_upah_tak_langsung', 'Upah tak langsung', 'xx', 1),
-  single('l21_alat_kecil', 'Belanja alat-alat kecil', 'xx', 1),
-  single('l21_sewa', 'Sewa kilang', 'xx', 1),
-  single('l21_insurans', 'Insurans kilang', 'xx', 1),
-  single('l21_kadar_bayaran', 'Kadar bayaran kilang', 'xx', 1),
-  single('l21_penyelenggaraan', 'Belanja penyelenggaraan mesin', 'xx', 1, 0, { hasBottomBorder: true }),
+  single('l21_susut_mesin', 'Susut nilai Mesin', 'x', 1),
+  single('l21_susut_alatan', 'Susut nilai Alatan', 'x', 1),
+  single('l21_upah_tak_langsung', 'Upah tak langsung', 'x', 1),
+  single('l21_alat_kecil', 'Belanja alat-alat kecil', 'x', 1),
+  single('l21_sewa', 'Sewa kilang', 'x', 1),
+  single('l21_insurans', 'Insurans kilang', 'x', 1),
+  single('l21_kadar_bayaran', 'Kadar bayaran kilang', 'x', 1),
+  single('l21_penyelenggaraan', 'Belanja penyelenggaraan mesin', 'x', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_overhed_total', 'xx', 2),
   amountOnlyRow('l21_kos_sebelum_kdp', 'xx', 2),
-  operatorRow('l21_kdp_awal', 'Tambah', 'Kerja dalam proses awal', 'xx', 1, 0, { hasBottomBorder: true }),
+  operatorRow('l21_kdp_awal', 'Tambah', 'Kerja dalam proses awal', 'x', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_kdp_tambah_total', 'xx', 2),
-  operatorRow('l21_kdp_akhir', 'Tolak', 'Kerja dalam proses akhir', '(xx)', 2, 0, { hasBottomBorder: true }),
-  single('l21_kos_pengeluaran', 'Kos Pengeluaran', 'xx', 2, 0, { isTotal: true, isHeader: true })
+  operatorRow('l21_kdp_akhir', 'Tolak', 'Kerja dalam proses akhir', '(x)', 2, 0, { hasBottomBorder: true }),
+  single('l21_kos_pengeluaran', 'Kos Pengeluaran', 'xxx', 2, 0, { isTotal: true, isHeader: true })
 ];
 
 const LEVEL_21_LABELS = LEVEL_21_STRUCTURE.flatMap(row =>
@@ -1312,7 +1312,7 @@ const LEVEL_21_LABELS = LEVEL_21_STRUCTURE.flatMap(row =>
 // --- LEVEL 22: AKAUN PERDAGANGAN (KOS PENGELUARAN) ---
 
 const LEVEL_22_STRUCTURE: RowConfig[] = [
-  single('l22_jualan', 'Jualan', 'xx', 2),
+  single('l22_jualan', 'Jualan', 'x', 2),
   {
     id: 'l22_kos_jualan_header',
     zones: [
@@ -1323,13 +1323,13 @@ const LEVEL_22_STRUCTURE: RowConfig[] = [
     columnIndex: 0,
     isHeader: true
   },
-  single('l22_inv_awal_barang', 'Inventori Awal barang siap', 'xx', 1),
-  single('l22_belian_barang', 'Belian barang siap', 'xx', 0),
-  single('l22_kos_pengeluaran', 'Kos Pengeluaran', 'xx', 0, 0, { hasBottomBorder: true }),
+  single('l22_inv_awal_barang', 'Inventori Awal barang siap', 'x', 1),
+  single('l22_belian_barang', 'Belian barang siap', 'x', 0),
+  single('l22_kos_pengeluaran', 'Kos Pengeluaran', 'x', 0, 0, { hasBottomBorder: true }),
   single('l22_kos_barang_siap', 'Kos barang siap', 'xx', 1),
-  operatorRow('l22_inv_akhir_barang', 'Tolak', 'Inventori Akhir barang siap', '(xx)', 1, 0, { hasBottomBorder: true }),
+  operatorRow('l22_inv_akhir_barang', 'Tolak', 'Inventori Akhir barang siap', '(x)', 1, 0, { hasBottomBorder: true }),
   single('l22_kos_jualan', 'Kos Jualan', '(xx)', 2, 0, { hasBottomBorder: true }),
-  single('l22_untung_kasar', 'Untung Kasar', 'xx', 2, 0, { isTotal: true, isHeader: true })
+  single('l22_untung_kasar', 'Untung Kasar', 'xxx', 2, 0, { isTotal: true, isHeader: true })
 ];
 
 const LEVEL_22_LABELS = LEVEL_22_STRUCTURE.flatMap(row =>

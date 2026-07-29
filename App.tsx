@@ -708,13 +708,13 @@ export default function App() {
     );
   };
 
-  const renderStatementRow = (row: RowConfig) => {
+  const renderStatementRow = (row: RowConfig, previousRowHasBottomBorder = false) => {
     const showRedLine = row.hasBottomBorder;
     const showDoubleLine = row.isTotal;
     const indentClass = row.indent === 1 ? "pl-8" : "";
     
     return (
-      <tr key={row.id} className="min-h-[3.5rem] hover:bg-slate-50 transition-colors group">
+      <tr key={row.id} className="min-h-[3.5rem] even:bg-slate-50/70 hover:bg-indigo-50/60 transition-colors group">
         <td className="py-3 pr-4 w-3/5 pl-2 align-middle">
           <div className={`flex items-center gap-2 ${indentClass} h-full border-b border-transparent group-hover:border-slate-200`}>
             {row.zones.map((zone, idx) => renderZone(zone, idx, row))}
@@ -725,11 +725,12 @@ export default function App() {
            const customZone = row.columnZones?.[colIdx];
            const isLastColumn = colIdx === 2;
            const isActiveTotalColumn = row.columnIndex === colIdx && showDoubleLine;
+           const needsTotalTopLine = isActiveTotalColumn && !previousRowHasBottomBorder;
            return (
              <td key={colIdx} className={`
                w-[13%] align-middle px-0 py-0 relative
                ${!isLastColumn ? 'border-r border-gray-100' : ''}
-               ${isActiveTotalColumn ? 'border-t border-gray-900' : ''}
+               ${needsTotalTopLine ? 'border-t border-gray-900' : ''}
              `}>
                <div className="flex items-center justify-end w-full h-12 px-2">
                   {customZone ? (
@@ -936,7 +937,7 @@ export default function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {activeStructure.map(renderStatementRow)}
+                  {activeStructure.map((row, idx) => renderStatementRow(row, idx > 0 && !!activeStructure[idx - 1].hasBottomBorder))}
                 </tbody>
               </table>
             ) : layoutType === 'ledger' ? (
