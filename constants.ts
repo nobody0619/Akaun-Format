@@ -32,6 +32,18 @@ const operatorRow = (id: string, op: string, label: string, num: string, col: 0|
   ...opts
 });
 
+const guidedOperatorRow = (id: string, op: string, label: string, num: string, col: 0|1|2, indent = 0, opts: Partial<RowConfig> = {}): RowConfig => ({
+  id,
+  zones: [
+    { id: `${id}_op_static`, expectedLabels: [], widthClass: 'w-20', placeholder: op, isStaticText: true },
+    { id: `${id}_item`, expectedLabels: [label], widthClass: 'flex-1' }
+  ],
+  displayNumber: num,
+  columnIndex: col,
+  indent,
+  ...opts
+});
+
 const swappableRow = (id: string, validLabels: string[], groupName: string, num: string, col: 0|1|2, indent = 0, opts: Partial<RowConfig> = {}): RowConfig => ({
   id,
   zones: [{ id: `${id}_zone`, expectedLabels: validLabels, widthClass: 'w-full', group: groupName }],
@@ -1222,21 +1234,21 @@ const LEVEL_20_STRUCTURE: RowConfig[] = [
   amountOnlyRow('l20_bahan_awal_total', 'X', 2),
 
   single('l20_belian_bahan', 'Belian bahan langsung', 'X', 1),
-  operatorRow('l20_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(X)', 1, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l20_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(X)', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l20_belian_bersih', 'X', 1),
-  operatorRow('l20_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'X', 1),
+  guidedOperatorRow('l20_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'X', 1),
   single('l20_duti_bahan', 'Duti atas belian bahan langsung', 'X', 1, 1, { hasBottomBorder: true }),
   amountOnlyRow('l20_kos_belian_bahan', 'X', 2),
-  operatorRow('l20_inv_akhir_bahan', 'Tolak', 'Inventori Akhir bahan langsung', 'X', 1),
+  guidedOperatorRow('l20_inv_akhir_bahan', 'Tolak', 'Inventori Akhir bahan langsung', 'X', 1),
   single('l20_kdp_akhir_bahan', 'Kerja dalam proses akhir', 'X', 1, 1, { hasBottomBorder: true }),
   amountOnlyRow('l20_bahan_akhir_total', '(X)', 2, { hasBottomBorder: true }),
   single('l20_kos_bahan_digunakan', 'Kos bahan langsung digunakan', 'XX', 2, 0, { isHeader: true }),
 
   headerRow('l20_buruh_header', 'Kos Buruh Langsung', { isUnderlined: false }),
   single('l20_buruh_langsung', 'Buruh langsung', 'X', 1),
-  operatorRow('l20_kdp_awal_buruh', 'Tambah', 'Kerja dalam proses awal', 'X', 1, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l20_kdp_awal_buruh', 'Tambah', 'Kerja dalam proses awal', 'X', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l20_buruh_tambah_total', 'X', 1),
-  operatorRow('l20_kdp_akhir_buruh', 'Tolak', 'Kerja dalam proses akhir', '(X)', 1, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l20_kdp_akhir_buruh', 'Tolak', 'Kerja dalam proses akhir', '(X)', 1, 0, { hasBottomBorder: true }),
   single('l20_kos_buruh', 'Kos buruh langsung', 'XX', 2, 0, { isHeader: true }),
 
   headerRow('l20_belanja_header', 'Belanja langsung', { isUnderlined: false }),
@@ -1256,9 +1268,9 @@ const LEVEL_20_STRUCTURE: RowConfig[] = [
   single('l20_susut_mesin', 'Susut nilai Mesin', 'X', 1),
   single('l20_alat_kecil', 'Belanja alat-alat kecil', 'X', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l20_overhed_total', 'X', 1),
-  operatorRow('l20_kdp_awal_overhed', 'Tambah', 'Kerja dalam proses awal', 'X', 1, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l20_kdp_awal_overhed', 'Tambah', 'Kerja dalam proses awal', 'X', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l20_overhed_tambah_total', 'X', 1),
-  operatorRow('l20_kdp_akhir_overhed', 'Tolak', 'Kerja dalam proses akhir', '(X)', 1, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l20_kdp_akhir_overhed', 'Tolak', 'Kerja dalam proses akhir', '(X)', 1, 0, { hasBottomBorder: true }),
   single('l20_kos_pengeluaran', 'Kos Pengeluaran', 'XX', 2, 0, { isTotal: true, isHeader: true })
 ];
 
@@ -1273,11 +1285,11 @@ const LEVEL_21_STRUCTURE: RowConfig[] = [
   headerRow('l21_bahan_header', 'Kos Bahan Langsung', { isUnderlined: false }),
   single('l21_inv_awal_bahan', 'Inventori awal bahan langsung', 'x', 2),
   single('l21_belian_bahan', 'Belian bahan langsung', 'x', 1),
-  operatorRow('l21_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(x)', 1, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l21_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(x)', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_belian_bersih', 'xx', 1),
-  operatorRow('l21_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'x', 1, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l21_angkutan_bahan', 'Tambah', 'Angkutan masuk bahan langsung', 'x', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_kos_belian', 'xx', 2),
-  operatorRow('l21_inv_akhir_bahan', 'Tolak', 'Inventori akhir bahan langsung', '(x)', 2, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l21_inv_akhir_bahan', 'Tolak', 'Inventori akhir bahan langsung', '(x)', 2, 0, { hasBottomBorder: true }),
   single('l21_kos_bahan_digunakan', 'Kos bahan langsung digunakan', 'xx', 2, 0, { isHeader: true }),
 
   headerRow('l21_buruh_header', 'Kos Buruh Langsung', { isUnderlined: false }),
@@ -1298,9 +1310,9 @@ const LEVEL_21_STRUCTURE: RowConfig[] = [
   single('l21_penyelenggaraan', 'Belanja penyelenggaraan mesin', 'x', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_overhed_total', 'xx', 2),
   amountOnlyRow('l21_kos_sebelum_kdp', 'xx', 2),
-  operatorRow('l21_kdp_awal', 'Tambah', 'Kerja dalam proses awal', 'x', 1, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l21_kdp_awal', 'Tambah', 'Kerja dalam proses awal', 'x', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l21_kdp_tambah_total', 'xx', 2),
-  operatorRow('l21_kdp_akhir', 'Tolak', 'Kerja dalam proses akhir', '(x)', 2, 0, { hasBottomBorder: true }),
+  guidedOperatorRow('l21_kdp_akhir', 'Tolak', 'Kerja dalam proses akhir', '(x)', 2, 0, { hasBottomBorder: true }),
   single('l21_kos_pengeluaran', 'Kos Pengeluaran', 'xxx', 2, 0, { isTotal: true, isHeader: true })
 ];
 
@@ -1502,14 +1514,38 @@ export const LEVELS: LevelConfig[] = [
     subtitle: "Akaun Pengeluaran bagi tahun berakhir ...",
     labels: LEVEL_20_LABELS,
     structure: LEVEL_20_STRUCTURE,
-    layoutType: 'statement'
+    layoutType: 'statement',
+    statementSections: [
+      {
+        title: 'Kos Bahan Langsung + Kos Buruh Langsung + Belanja Langsung / Kos Prima',
+        startRowId: 'l20_bahan_header',
+        endRowId: 'l20_kos_prima'
+      },
+      {
+        title: 'Kos Overhed + Kerja dalam proses / Kos Pengeluaran',
+        startRowId: 'l20_overhed_header',
+        endRowId: 'l20_kos_pengeluaran'
+      }
+    ]
   },
   {
     title: "Kos Pengeluaran",
     subtitle: "Akaun Pengeluaran bagi tahun berakhir 31 Ogos 2017",
     labels: LEVEL_21_LABELS,
     structure: LEVEL_21_STRUCTURE,
-    layoutType: 'statement'
+    layoutType: 'statement',
+    statementSections: [
+      {
+        title: 'Kos Bahan Langsung + Kos Buruh Langsung + Belanja Langsung / Kos Prima',
+        startRowId: 'l21_bahan_header',
+        endRowId: 'l21_kos_prima'
+      },
+      {
+        title: 'Kos Overhed + Kerja dalam proses / Kos Pengeluaran',
+        startRowId: 'l21_overhed_header',
+        endRowId: 'l21_kos_pengeluaran'
+      }
+    ]
   },
   {
     title: "Akaun Perdagangan (Kos Pengeluaran)",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { DraggableItem, RowConfig, DropZoneConfig, GameState, LedgerSideConfig } from './types';
 import { LEVELS } from './constants';
 import { FileQuestion, CheckCircle2, Award, GripVertical, ChevronRight, BookOpen, ArrowLeft, Play, User, Trophy, Send, Loader2, Home, ArrowRight } from 'lucide-react';
@@ -8,6 +8,31 @@ import confetti from 'canvas-confetti';
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDkx8Ilow9slV-gbMEL2VV4UCdMvwDrtD6fTD_zdlrwAZuKeOQ-M38reizxvGh_9fzWw/exec";
 
 type ViewState = 'welcome' | 'selection' | 'game';
+
+type StatementSection = NonNullable<(typeof LEVELS)[number]['statementSections']>[number];
+
+const EMPTY_STATEMENT_SECTIONS: StatementSection[] = [];
+
+const getStatementSectionRows = (structure: RowConfig[], section?: StatementSection): RowConfig[] => {
+  if (!section) return structure;
+  const startIndex = structure.findIndex(row => row.id === section.startRowId);
+  const endIndex = structure.findIndex(row => row.id === section.endRowId);
+  if (startIndex < 0 || endIndex < startIndex) return structure;
+  return structure.slice(startIndex, endIndex + 1);
+};
+
+const getStatementLabels = (structure: RowConfig[]): string[] =>
+  structure.flatMap(row => [
+    ...row.zones.flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : []),
+    ...Object.values(row.columnZones || {}).flatMap(zone => zone.expectedLabels.length === 1 ? zone.expectedLabels : [])
+  ]);
+
+const makeDraggableItems = (labels: string[], level: number, key: string): DraggableItem[] =>
+  labels.map((label, index) => ({
+    id: `item-${key}-${index}-${label.replace(/\s/g, '')}-${level}`,
+    label,
+    isClone: false
+  })).sort(() => Math.random() - 0.5);
 
 const Header = ({ 
   currentLevel, 
@@ -159,6 +184,7 @@ export default function App() {
   const [quizQueue, setQuizQueue] = useState<number[]>([]);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [showNextButton, setShowNextButton] = useState(false); // New state for manual progression
+  const [currentStatementSection, setCurrentStatementSection] = useState(0);
 
   const [gameState, setGameState] = useState<GameState>({
     placedItems: {},
@@ -184,6 +210,15 @@ export default function App() {
   const ledgerHeaders = activeLevelConfig.ledgerHeaders || ['Sarah', 'Helmi'];
   const ledgerDateHeader = activeLevelConfig.ledgerDateHeader || 'Tarikh';
   const isTAccount = activeLevelConfig.ledgerVariant === 't-account';
+  const statementSections = activeLevelConfig.statementSections || EMPTY_STATEMENT_SECTIONS;
+  const isSectionedStatement = layoutType === 'statement' && statementSections.length > 0;
+  const currentStatementSectionConfig = statementSections[currentStatementSection];
+  const activeStatementStructure = useMemo(
+    () => isSectionedStatement
+      ? getStatementSectionRows(activeStructure, currentStatementSectionConfig)
+      : activeStructure,
+    [activeStructure, currentStatementSectionConfig, isSectionedStatement]
+  );
 
   useEffect(() => {
     if (view !== 'game') return;
@@ -206,6 +241,7 @@ export default function App() {
     setScoreSubmitted(false);
     setIsSubmitting(false);
     setShowNextButton(false);
+    setCurrentStatementSection(0);
     
     // For Formula mode, shuffle questions
     if (layoutType === 'formula') {
@@ -218,17 +254,19 @@ export default function App() {
         setCurrentQuizIndex(0);
     }
 
-    const items: DraggableItem[] = activeLabels.map((label, index) => ({
-      id: `item-${index}-${label.replace(/\s/g, '')}-${currentLevel}`,
-      label,
-      isClone: false,
-    })).sort(() => Math.random() - 0.5);
+    const initialStatementRows = isSectionedStatement
+      ? getStatementSectionRows(activeStructure, statementSections[0])
+      : activeStructure;
+    const labelsForPool = isSectionedStatement
+      ? getStatementLabels(initialStatementRows)
+      : activeLabels;
+    const items = makeDraggableItems(labelsForPool, currentLevel, isSectionedStatement ? 'section-0' : 'full');
 
     setGameState(prev => ({
       ...prev,
       availableItems: items,
     }));
-  }, [currentLevel, activeLabels, view, layoutType, activeStructure]);
+  }, [currentLevel, activeLabels, view, layoutType, activeStructure, isSectionedStatement, statementSections]);
 
   // Effect to check question completion for Formula Mode
   useEffect(() => {
@@ -270,13 +308,37 @@ export default function App() {
       }
   };
 
+  const handleNextStatementSection = () => {
+    const nextSectionIndex = currentStatementSection + 1;
+    const nextSection = statementSections[nextSectionIndex];
+    if (!nextSection) return;
+
+    const nextRows = getStatementSectionRows(activeStructure, nextSection);
+    const nextItems = makeDraggableItems(
+      getStatementLabels(nextRows),
+      currentLevel,
+      `section-${nextSectionIndex}`
+    );
+
+    setCurrentStatementSection(nextSectionIndex);
+    setShowNextButton(false);
+    setGameState(prev => ({
+      ...prev,
+      placedItems: {},
+      slotStatus: {},
+      availableItems: nextItems,
+      selectedItemId: null,
+      isVictoryDelayed: false
+    }));
+  };
+
   useEffect(() => {
     if (view !== 'game') return;
     if (layoutType === 'formula') return; 
 
     const allZones: DropZoneConfig[] = [];
     if (layoutType === 'statement') {
-      activeStructure.forEach(row => {
+      activeStatementStructure.forEach(row => {
         allZones.push(...row.zones);
         if (row.columnZones) allZones.push(...Object.values(row.columnZones));
       });
@@ -295,9 +357,26 @@ export default function App() {
     const filledCorrectly = Object.keys(gameState.placedItems).length;
     
     if (filledCorrectly === totalZones && !gameState.isVictoryDelayed && !gameState.completed) {
-      setGameState(prev => ({ ...prev, isVictoryDelayed: true }));
+      if (isSectionedStatement && currentStatementSection < statementSections.length - 1) {
+        if (!showNextButton) setShowNextButton(true);
+      } else {
+        setGameState(prev => ({ ...prev, isVictoryDelayed: true }));
+      }
     }
-  }, [gameState.placedItems, gameState.completed, gameState.isVictoryDelayed, activeStructure, view, layoutType, graphZones]);
+  }, [
+    gameState.placedItems,
+    gameState.completed,
+    gameState.isVictoryDelayed,
+    activeStatementStructure,
+    activeStructure,
+    view,
+    layoutType,
+    graphZones,
+    isSectionedStatement,
+    currentStatementSection,
+    statementSections.length,
+    showNextButton
+  ]);
 
   useEffect(() => {
     if (gameState.isVictoryDelayed && !gameState.completed) {
@@ -379,7 +458,12 @@ export default function App() {
 
     if (isValid && zone.group) {
       const allZones: DropZoneConfig[] = [];
-      if (layoutType === 'statement' || layoutType === 'formula') {
+      if (layoutType === 'statement') {
+          activeStatementStructure.forEach(row => {
+            allZones.push(...row.zones);
+            if (row.columnZones) allZones.push(...Object.values(row.columnZones));
+          });
+      } else if (layoutType === 'formula') {
           activeStructure.forEach(row => {
             allZones.push(...row.zones);
             if (row.columnZones) allZones.push(...Object.values(row.columnZones));
@@ -410,7 +494,7 @@ export default function App() {
     }
     
     setDraggedItemId(null);
-  }, [gameState.availableItems, gameState.placedItems, gameState.completed, activeStructure, layoutType, graphZones]);
+  }, [gameState.availableItems, gameState.placedItems, gameState.completed, activeStructure, activeStatementStructure, layoutType, graphZones]);
 
   const handleCorrectMove = (zone: DropZoneConfig, item: DraggableItem) => {
     setGameState(prev => {
@@ -425,7 +509,12 @@ export default function App() {
         // 2. Calculate Remaining Slots that need this label
         // (Logic to count how many OTHER empty slots specifically need this label)
         const allZones: DropZoneConfig[] = [];
-         if (layoutType === 'statement' || layoutType === 'formula') {
+         if (layoutType === 'statement') {
+            activeStatementStructure.forEach(row => {
+                allZones.push(...row.zones);
+                if (row.columnZones) allZones.push(...Object.values(row.columnZones));
+            });
+        } else if (layoutType === 'formula') {
             activeStructure.forEach(row => {
                 allZones.push(...row.zones);
                 if (row.columnZones) allZones.push(...Object.values(row.columnZones));
@@ -927,19 +1016,41 @@ export default function App() {
               </h3>
             )}
             {layoutType === 'statement' ? (
-              <table className="w-full text-sm md:text-base border-collapse min-w-[700px]">
-                <thead>
-                  <tr className="border-b border-black">
-                    <th className="text-left py-4 pl-4 font-semibold text-gray-400 uppercase text-xs tracking-wider"></th>
-                    <th className="text-right py-4 px-2 font-bold text-gray-800 w-[13%]">RM</th>
-                    <th className="text-right py-4 px-2 font-bold text-gray-800 w-[13%]">RM</th>
-                    <th className="text-right py-4 px-2 font-bold text-gray-800 w-[13%]">RM</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activeStructure.map((row, idx) => renderStatementRow(row, idx > 0 && !!activeStructure[idx - 1].hasBottomBorder))}
-                </tbody>
-              </table>
+              <>
+                {isSectionedStatement && currentStatementSectionConfig && (
+                  <div className="min-w-[700px] mb-3 flex items-center justify-between gap-4 border-b border-indigo-200 pb-3">
+                    <h4 className="font-bold text-indigo-900 text-sm md:text-base">
+                      {currentStatementSectionConfig.title}
+                    </h4>
+                    <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-md whitespace-nowrap">
+                      Bahagian {currentStatementSection + 1} / {statementSections.length}
+                    </span>
+                  </div>
+                )}
+                <table className="w-full text-sm md:text-base border-collapse min-w-[700px]">
+                  <thead>
+                    <tr className="border-b border-black">
+                      <th className="text-left py-4 pl-4 font-semibold text-gray-400 uppercase text-xs tracking-wider"></th>
+                      <th className="text-right py-4 px-2 font-bold text-gray-800 w-[13%]">RM</th>
+                      <th className="text-right py-4 px-2 font-bold text-gray-800 w-[13%]">RM</th>
+                      <th className="text-right py-4 px-2 font-bold text-gray-800 w-[13%]">RM</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {activeStatementStructure.map((row, idx) => renderStatementRow(row, idx > 0 && !!activeStatementStructure[idx - 1].hasBottomBorder))}
+                  </tbody>
+                </table>
+                {isSectionedStatement && showNextButton && (
+                  <div className="min-w-[700px] flex justify-end mt-6">
+                    <button
+                      onClick={handleNextStatementSection}
+                      className="px-5 py-3 bg-indigo-600 text-white rounded-lg font-bold shadow-md hover:bg-indigo-700 transition-colors flex items-center gap-2"
+                    >
+                      Bahagian Seterusnya <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
+              </>
             ) : layoutType === 'ledger' ? (
               <>
                 <table className={`w-full text-sm border-collapse min-w-[800px] ${isTAccount ? "max-w-5xl mx-auto border-t-2 border-gray-900 table-fixed" : ""}`}>
