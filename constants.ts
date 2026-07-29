@@ -1274,7 +1274,7 @@ const l20_overhead_items = [
 ];
 
 const LEVEL_20_STRUCTURE: RowConfig[] = [
-  headerRow('l20_bahan_header', 'Kos Bahan Langsung', { isUnderlined: false }),
+  headerRow('l20_bahan_header', 'Kos Bahan Langsung', { isUnderlined: true }),
   single('l20_inv_awal_bahan', 'Inventori Awal bahan langsung', 'X', 2),
   single('l20_kdp_awal_bahan', 'Kerja dalam proses awal', 'X', 2, 1, { hasBottomBorder: true }),
   amountOnlyRow('l20_bahan_awal_total', 'X', 2),
@@ -1290,20 +1290,20 @@ const LEVEL_20_STRUCTURE: RowConfig[] = [
   amountOnlyRow('l20_bahan_akhir_total', '(X)', 2, { hasBottomBorder: true }),
   single('l20_kos_bahan_digunakan', 'Kos bahan langsung digunakan', 'XX', 2, 0, { isHeader: true }),
 
-  headerRow('l20_buruh_header', 'Kos Buruh Langsung', { isUnderlined: false }),
+  headerRow('l20_buruh_header', 'Kos Buruh Langsung', { isUnderlined: true }),
   single('l20_buruh_langsung', 'Buruh langsung', 'X', 1),
   guidedOperatorRow('l20_kdp_awal_buruh', 'Tambah', 'Kerja dalam proses awal', 'X', 1, 0, { hasBottomBorder: true }),
   amountOnlyRow('l20_buruh_tambah_total', 'X', 1),
   guidedOperatorRow('l20_kdp_akhir_buruh', 'Tolak', 'Kerja dalam proses akhir', '(X)', 1, 0, { hasBottomBorder: true }),
   single('l20_kos_buruh', 'Kos buruh langsung', 'XX', 2, 0, { isHeader: true }),
 
-  headerRow('l20_belanja_header', 'Belanja langsung', { isUnderlined: false }),
+  headerRow('l20_belanja_header', 'Belanja langsung', { isUnderlined: true }),
   swappableRow('l20_paten', l20_direct_expenses, 'l20_direct_expenses', 'X', 1),
   swappableRow('l20_hak_cipta', l20_direct_expenses, 'l20_direct_expenses', 'X', 1),
   swappableRow('l20_royalti', l20_direct_expenses, 'l20_direct_expenses', 'X', 1, 0, { hasBottomBorder: true }),
   single('l20_kos_prima', 'Kos Prima', 'XX', 2, 0, { isHeader: true }),
 
-  headerRow('l20_overhed_header', 'Kos Overhed', { isUnderlined: false }),
+  headerRow('l20_overhed_header', 'Kos Overhed', { isUnderlined: true }),
   swappableRow('l20_alat_tulis', l20_overhead_items, 'l20_overhead_items', 'X', 1),
   swappableRow('l20_gaji_pengurus', l20_overhead_items, 'l20_overhead_items', 'X', 1),
   swappableRow('l20_pembaikan', l20_overhead_items, 'l20_overhead_items', 'X', 1),
@@ -1337,7 +1337,7 @@ const l21_overhead_items = [
 ];
 
 const LEVEL_21_STRUCTURE: RowConfig[] = [
-  headerRow('l21_bahan_header', 'Kos Bahan Langsung', { isUnderlined: false }),
+  headerRow('l21_bahan_header', 'Kos Bahan Langsung', { isUnderlined: true }),
   single('l21_inv_awal_bahan', 'Inventori awal bahan langsung', 'x', 2),
   single('l21_belian_bahan', 'Belian bahan langsung', 'x', 1),
   guidedOperatorRow('l21_pulangan_bahan', 'Tolak', 'Pulangan belian bahan langsung', '(x)', 1, 0, { hasBottomBorder: true }),
@@ -1347,14 +1347,14 @@ const LEVEL_21_STRUCTURE: RowConfig[] = [
   guidedOperatorRow('l21_inv_akhir_bahan', 'Tolak', 'Inventori akhir bahan langsung', '(x)', 2, 0, { hasBottomBorder: true }),
   single('l21_kos_bahan_digunakan', 'Kos bahan langsung digunakan', 'xx', 2, 0, { isHeader: true }),
 
-  headerRow('l21_buruh_header', 'Kos Buruh Langsung', { isUnderlined: false }),
+  headerRow('l21_buruh_header', 'Kos Buruh Langsung', { isUnderlined: true }),
   single('l21_upah_langsung', 'Upah langsung', 'x', 2),
 
-  headerRow('l21_belanja_header', 'Belanja langsung', { isUnderlined: false }),
+  headerRow('l21_belanja_header', 'Belanja langsung', { isUnderlined: true }),
   single('l21_hak_cipta', 'Hak cipta', 'x', 1, 0, { hasBottomBorder: true }),
   single('l21_kos_prima', 'Kos Prima', 'xx', 2, 0, { isHeader: true }),
 
-  headerRow('l21_overhed_header', 'Kos Overhed', { isUnderlined: false }),
+  headerRow('l21_overhed_header', 'Kos Overhed', { isUnderlined: true }),
   swappableRow('l21_susut_mesin', l21_overhead_items, 'l21_overhead_items', 'x', 1),
   swappableRow('l21_susut_alatan', l21_overhead_items, 'l21_overhead_items', 'x', 1),
   swappableRow('l21_upah_tak_langsung', l21_overhead_items, 'l21_overhead_items', 'x', 1),
