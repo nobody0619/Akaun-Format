@@ -72,6 +72,12 @@ export interface LevelConfig {
   ledgerHeaders?: string[]; // Custom headers [Col1, Col2] or [Amount]
   ledgerDateHeader?: string; // Custom date/year heading for ledger layouts
   ledgerVariant?: 'standard' | 't-account'; // Optional T-account presentation
+  ledgerSections?: Array<{
+    title: string;
+    startRowId: string;
+    endRowId: string;
+    variant: 't-account' | 'statement-excerpt';
+  }>;
 }
 
 export interface GameState {

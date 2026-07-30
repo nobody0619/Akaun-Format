@@ -1402,6 +1402,104 @@ const LEVEL_22_LABELS = LEVEL_22_STRUCTURE.flatMap(row =>
 );
 
 
+// --- LEVELS 23-25: ASSET DISPOSAL LEDGERS ---
+
+const ledgerEntrySide = (id: string, date: string, label: string, amount: string) => ({
+  date,
+  zone: { id: `${id}_zone`, expectedLabels: [label], widthClass: 'w-full' },
+  col1: amount
+});
+
+const ledgerBlankSide = (amount = '') => ({
+  date: '',
+  staticLabel: '',
+  col1: amount
+});
+
+const getLedgerLabels = (structure: RowConfig[]): string[] =>
+  structure.flatMap(row => [
+    ...(row.ledgerLeft?.zone?.expectedLabels || []),
+    ...(row.ledgerRight?.zone?.expectedLabels || [])
+  ]);
+
+const LEVEL_23_STRUCTURE: RowConfig[] = [
+  ledgerRow(
+    'l23_2016_entries',
+    ledgerEntrySide('l23_bank', '2016 Jan 1', 'Bank', '5 800'),
+    ledgerEntrySide('l23_baki_hb_2016', '2016 Dis 31', 'Baki h/b', '5 800')
+  ),
+  ledgerRow('l23_total_2016', ledgerBlankSide('5 800'), ledgerBlankSide('5 800'), { isTotal: true }),
+  ledgerRow(
+    'l23_2017_entries',
+    ledgerEntrySide('l23_baki_bb_2017', '2017 Jan 1', 'Baki b/b', '5 800'),
+    ledgerEntrySide('l23_baki_hb_2017', '2017 Dis 31', 'Baki h/b', '5 800')
+  ),
+  ledgerRow('l23_total_2017', ledgerBlankSide('5 800'), ledgerBlankSide('5 800'), { isTotal: true }),
+  ledgerRow(
+    'l23_2018_entries',
+    ledgerEntrySide('l23_baki_bb_2018', '2018 Jan 1', 'Baki b/b', '5 800'),
+    ledgerEntrySide('l23_pelupusan', '2018 Dis 31', 'Pelupusan Mesin Jahit', '5 800')
+  ),
+  ledgerRow('l23_total_2018', ledgerBlankSide('5 800'), ledgerBlankSide('5 800'), { isTotal: true })
+];
+
+const LEVEL_23_LABELS = getLedgerLabels(LEVEL_23_STRUCTURE);
+
+const LEVEL_24_STRUCTURE: RowConfig[] = [
+  ledgerRow(
+    'l24_2016_entries',
+    ledgerEntrySide('l24_baki_hb_2016', '2016 Dis 31', 'Baki h/b', '580'),
+    ledgerEntrySide('l24_susut_2016', '2016 Dis 31', 'Susut Nilai Mesin Jahit', '580')
+  ),
+  ledgerRow('l24_total_2016', ledgerBlankSide('580'), ledgerBlankSide('580'), { isTotal: true }),
+  ledgerRow(
+    'l24_2017_first',
+    ledgerEntrySide('l24_baki_hb_2017', '2017 Dis 31', 'Baki h/b', '1 160'),
+    ledgerEntrySide('l24_baki_bb_2017', '2017 Dis 31', 'Baki b/b', '580')
+  ),
+  ledgerRow('l24_2017_second', ledgerBlankSide(), ledgerEntrySide('l24_susut_2017', '', 'Susut Nilai Mesin Jahit', '580')),
+  ledgerRow('l24_total_2017', ledgerBlankSide('1 160'), ledgerBlankSide('1 160'), { isTotal: true }),
+  ledgerRow(
+    'l24_2018_first',
+    ledgerEntrySide('l24_pelupusan', '2018 Dis 31', 'Pelupusan Mesin Jahit', '1 740'),
+    ledgerEntrySide('l24_baki_bb_2018', '2018 Dis 31', 'Baki b/b', '1 160')
+  ),
+  ledgerRow('l24_2018_second', ledgerBlankSide(), ledgerEntrySide('l24_susut_2018', '', 'Susut Nilai Mesin Jahit', '580')),
+  ledgerRow('l24_total_2018', ledgerBlankSide('1 740'), ledgerBlankSide('1 740'), { isTotal: true })
+];
+
+const LEVEL_24_LABELS = getLedgerLabels(LEVEL_24_STRUCTURE);
+
+const LEVEL_25_STRUCTURE: RowConfig[] = [
+  ledgerRow(
+    'l25_pelupusan_first',
+    ledgerEntrySide('l25_mesin_jahit', '2018 Dis 31', 'Mesin Jahit', '5 800'),
+    ledgerEntrySide('l25_snt_mesin', '2018 Dis 31', 'Susut Nilai Terkumpul Mesin Jahit', '1 740')
+  ),
+  ledgerRow(
+    'l25_pelupusan_second',
+    ledgerEntrySide('l25_untung_pelupusan', '', 'Untung Atas Pelupusan', '140'),
+    ledgerEntrySide('l25_bank', '', 'Bank', '4 200')
+  ),
+  ledgerRow('l25_pelupusan_total', ledgerBlankSide('5 940'), ledgerBlankSide('5 940'), { isTotal: true }),
+
+  ledgerRow(
+    'l25_untung_first',
+    ledgerEntrySide('l25_akaun_untung_rugi', '2018 Dis 31', 'Akaun Untung Rugi', '140'),
+    ledgerEntrySide('l25_pelupusan_mesin', '2018 Dis 31', 'Pelupusan Mesin Jahit', '140')
+  ),
+  ledgerRow('l25_untung_total', ledgerBlankSide('140'), ledgerBlankSide('140'), { isTotal: true }),
+
+  ledgerRow(
+    'l25_ur_excerpt',
+    ledgerEntrySide('l25_untung_excerpt', '', 'Untung atas Pelupusan Mesin Jahit', '140'),
+    ledgerBlankSide()
+  )
+];
+
+const LEVEL_25_LABELS = getLedgerLabels(LEVEL_25_STRUCTURE);
+
+
 export const LEVELS: LevelConfig[] = [
   {
     title: "Akaun Perdagangan",
@@ -1606,6 +1704,59 @@ export const LEVELS: LevelConfig[] = [
     labels: LEVEL_22_LABELS,
     structure: LEVEL_22_STRUCTURE,
     layoutType: 'statement'
+  },
+  {
+    title: "Akaun ABS",
+    subtitle: "Akaun Mesin Jahit",
+    labels: LEVEL_23_LABELS,
+    structure: LEVEL_23_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM'],
+    ledgerDateHeader: 'Tarikh',
+    ledgerVariant: 't-account'
+  },
+  {
+    title: "Akaun SNT ABS",
+    subtitle: "Akaun Susut Nilai Terkumpul Mesin Jahit",
+    labels: LEVEL_24_LABELS,
+    structure: LEVEL_24_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM'],
+    ledgerDateHeader: 'Tarikh',
+    ledgerVariant: 't-account'
+  },
+  {
+    title: "Akaun Pelupusan ABS",
+    subtitle: "",
+    labels: LEVEL_25_LABELS,
+    structure: LEVEL_25_STRUCTURE,
+    layoutType: 'ledger',
+    ledgerColumns: 'single',
+    ledgerHeaders: ['RM'],
+    ledgerDateHeader: 'Tarikh',
+    ledgerVariant: 't-account',
+    ledgerSections: [
+      {
+        title: 'Akaun Pelupusan Mesin Jahit',
+        startRowId: 'l25_pelupusan_first',
+        endRowId: 'l25_pelupusan_total',
+        variant: 't-account'
+      },
+      {
+        title: 'Akaun Untung atas Pelupusan Mesin Jahit',
+        startRowId: 'l25_untung_first',
+        endRowId: 'l25_untung_total',
+        variant: 't-account'
+      },
+      {
+        title: 'Akaun Untung Rugi bagi tahun berakhir 31 Disember 2018 (Petikan)',
+        startRowId: 'l25_ur_excerpt',
+        endRowId: 'l25_ur_excerpt',
+        variant: 'statement-excerpt'
+      }
+    ]
   }
 ];
 

@@ -266,6 +266,7 @@ export default function App() {
   const ledgerHeaders = activeLevelConfig.ledgerHeaders || ['Sarah', 'Helmi'];
   const ledgerDateHeader = activeLevelConfig.ledgerDateHeader || 'Tarikh';
   const isTAccount = activeLevelConfig.ledgerVariant === 't-account';
+  const ledgerSections = activeLevelConfig.ledgerSections || [];
   const statementSections = activeLevelConfig.statementSections || EMPTY_STATEMENT_SECTIONS;
   const isSectionedStatement = layoutType === 'statement' && statementSections.length > 0;
   const currentStatementSectionConfig = statementSections[currentStatementSection];
@@ -1054,6 +1055,85 @@ export default function App() {
   const headerCol1 = ledgerHeaders[0];
   const headerCol2 = ledgerHeaders[1];
 
+  const renderLedgerTable = (rows: RowConfig[]) => (
+    <table className={`w-full text-sm border-collapse min-w-[800px] ${isTAccount ? "max-w-5xl mx-auto border-t-2 border-gray-900 table-fixed" : ""}`}>
+      {isTAccount && (
+        isSingleCol ? (
+          <colgroup>
+            <col className="w-[10%]" />
+            <col className="w-[32%]" />
+            <col className="w-[8%]" />
+            <col className="w-[10%]" />
+            <col className="w-[32%]" />
+            <col className="w-[8%]" />
+          </colgroup>
+        ) : (
+          <colgroup>
+            <col className="w-[8%]" />
+            <col className="w-[26%]" />
+            <col className="w-[8%]" />
+            <col className="w-[8%]" />
+            <col className="w-[8%]" />
+            <col className="w-[26%]" />
+            <col className="w-[8%]" />
+            <col className="w-[8%]" />
+          </colgroup>
+        )
+      )}
+      <thead className={isTAccount ? "bg-white" : "bg-indigo-50 border-b-2 border-indigo-100"}>
+        {!isTAccount && (
+          <tr>
+            <th colSpan={isSingleCol ? 3 : 4} className="py-2 border-r border-gray-900 text-center font-bold text-indigo-900 uppercase tracking-wider">Debit</th>
+            <th colSpan={isSingleCol ? 3 : 4} className="py-2 text-center font-bold text-indigo-900 uppercase tracking-wider">Credit</th>
+          </tr>
+        )}
+        <tr className="text-xs text-gray-500 uppercase tracking-wider">
+          <th className={`p-2 ${isTAccount ? '' : 'border-r border-gray-200'}`}>{ledgerDateHeader}</th>
+          <th className={`p-2 w-1/4 ${isTAccount ? '' : 'border-r border-gray-200'}`}>Butiran</th>
+          <th className={`p-2 ${isTAccount ? (isSingleCol ? 'border-r border-gray-900' : '') : `border-r ${isSingleCol ? 'border-gray-900' : 'border-gray-200'}`}`}>{headerCol1}</th>
+          {!isSingleCol && <th className="p-2 border-r border-gray-900">{headerCol2}</th>}
+          <th className={`p-2 ${isTAccount ? '' : 'border-r border-gray-200'}`}>{ledgerDateHeader}</th>
+          <th className={`p-2 w-1/4 ${isTAccount ? '' : 'border-r border-gray-200'}`}>Butiran</th>
+          <th className={`p-2 ${isTAccount ? '' : (isSingleCol ? '' : 'border-r border-gray-200')}`}>{headerCol1}</th>
+          {!isSingleCol && <th className="p-2">{headerCol2}</th>}
+        </tr>
+      </thead>
+      <tbody>{rows.map(renderLedgerRow)}</tbody>
+    </table>
+  );
+
+  const renderLedgerExcerpt = (rows: RowConfig[]) => (
+    <table className="w-full max-w-3xl mx-auto text-sm border-collapse min-w-[560px] border-t-2 border-gray-900 table-fixed">
+      <colgroup>
+        <col className="w-[84%]" />
+        <col className="w-[16%]" />
+      </colgroup>
+      <thead>
+        <tr className="text-xs text-gray-500 uppercase tracking-wider">
+          <th className="p-2 text-left">Butiran</th>
+          <th className="p-2 text-right">RM</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(row => {
+          const side = row.ledgerLeft;
+          if (!side) return null;
+          return (
+            <tr key={row.id} className="hover:bg-slate-50">
+              <td className="p-1">
+                {side.zone
+                  ? renderZone(side.zone, 0, null, true)
+                  : <div className="h-10 flex items-center px-2 font-semibold text-gray-700 text-sm">{side.staticLabel}</div>
+                }
+              </td>
+              <td className="p-3 text-right font-mono-numbers text-gray-800 border-b border-gray-900">{side.col1}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-200 select-none font-sans">
       <Header
@@ -1130,57 +1210,26 @@ export default function App() {
                 )}
               </>
             ) : layoutType === 'ledger' ? (
-              <>
-                <table className={`w-full text-sm border-collapse min-w-[800px] ${isTAccount ? "max-w-5xl mx-auto border-t-2 border-gray-900 table-fixed" : ""}`}>
-                {isTAccount && (
-                  isSingleCol ? (
-                    <colgroup>
-                      <col className="w-[10%]" />
-                      <col className="w-[32%]" />
-                      <col className="w-[8%]" />
-                      <col className="w-[10%]" />
-                      <col className="w-[32%]" />
-                      <col className="w-[8%]" />
-                    </colgroup>
-                  ) : (
-                    <colgroup>
-                      <col className="w-[8%]" />
-                      <col className="w-[26%]" />
-                      <col className="w-[8%]" />
-                      <col className="w-[8%]" />
-                      <col className="w-[8%]" />
-                      <col className="w-[26%]" />
-                      <col className="w-[8%]" />
-                      <col className="w-[8%]" />
-                    </colgroup>
-                  )
-                )}
-                <thead className={isTAccount ? "bg-white" : "bg-indigo-50 border-b-2 border-indigo-100"}>
-                  {!isTAccount && (
-                    <tr>
-                      <th colSpan={isSingleCol ? 3 : 4} className="py-2 border-r border-gray-900 text-center font-bold text-indigo-900 uppercase tracking-wider">Debit</th>
-                      <th colSpan={isSingleCol ? 3 : 4} className="py-2 text-center font-bold text-indigo-900 uppercase tracking-wider">Credit</th>
-                    </tr>
-                  )}
-                  <tr className="text-xs text-gray-500 uppercase tracking-wider">
-                    {/* LEFT HEADER */}
-                    <th className={`p-2 ${isTAccount ? '' : 'border-r border-gray-200'}`}>{ledgerDateHeader}</th>
-                    <th className={`p-2 w-1/4 ${isTAccount ? '' : 'border-r border-gray-200'}`}>Butiran</th>
-                    <th className={`p-2 ${isTAccount ? (isSingleCol ? 'border-r border-gray-900' : '') : `border-r ${isSingleCol ? 'border-gray-900' : 'border-gray-200'}`}`}>{headerCol1}</th>
-                    {!isSingleCol && <th className="p-2 border-r border-gray-900">{headerCol2}</th>}
-                    
-                    {/* RIGHT HEADER */}
-                    <th className={`p-2 ${isTAccount ? '' : 'border-r border-gray-200'}`}>{ledgerDateHeader}</th>
-                    <th className={`p-2 w-1/4 ${isTAccount ? '' : 'border-r border-gray-200'}`}>Butiran</th>
-                    <th className={`p-2 ${isTAccount ? '' : (isSingleCol ? '' : 'border-r border-gray-200')}`}>{headerCol1}</th>
-                    {!isSingleCol && <th className="p-2">{headerCol2}</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {activeStructure.map(renderLedgerRow)}
-                </tbody>
-                </table>
-              </>
+              ledgerSections.length > 0 ? (
+                <div className="min-w-[800px] max-w-5xl mx-auto space-y-10">
+                  {ledgerSections.map(section => {
+                    const sectionRows = getStatementSectionRows(activeStructure, section);
+                    return (
+                      <section key={section.startRowId}>
+                        <h4 className="text-center font-bold text-base md:text-lg text-gray-900 mb-2">
+                          {section.title}
+                        </h4>
+                        {section.variant === 'statement-excerpt'
+                          ? renderLedgerExcerpt(sectionRows)
+                          : renderLedgerTable(sectionRows)
+                        }
+                      </section>
+                    );
+                  })}
+                </div>
+              ) : (
+                renderLedgerTable(activeStructure)
+              )
             ) : layoutType === 'formula' ? (
                 // Render only the current formula based on queue
                 renderFormula(activeStructure[quizQueue[currentQuizIndex]])
