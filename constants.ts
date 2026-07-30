@@ -1425,20 +1425,20 @@ const getLedgerLabels = (structure: RowConfig[]): string[] =>
 const LEVEL_23_STRUCTURE: RowConfig[] = [
   ledgerRow(
     'l23_2016_entries',
-    ledgerEntrySide('l23_bank', '2016 Jan 1', 'Bank', '5 800'),
-    ledgerEntrySide('l23_baki_hb_2016', '2016 Dis 31', 'Baki h/b', '5 800')
+    ledgerEntrySide('l23_bank', '2016\nJan 1', 'Bank', '5 800'),
+    ledgerEntrySide('l23_baki_hb_2016', '2016\nDis 31', 'Baki h/b', '5 800')
   ),
   ledgerRow('l23_total_2016', ledgerBlankSide('5 800'), ledgerBlankSide('5 800'), { isTotal: true }),
   ledgerRow(
     'l23_2017_entries',
-    ledgerEntrySide('l23_baki_bb_2017', '2017 Jan 1', 'Baki b/b', '5 800'),
-    ledgerEntrySide('l23_baki_hb_2017', '2017 Dis 31', 'Baki h/b', '5 800')
+    ledgerEntrySide('l23_baki_bb_2017', '2017\nJan 1', 'Baki b/b', '5 800'),
+    ledgerEntrySide('l23_baki_hb_2017', '2017\nDis 31', 'Baki h/b', '5 800')
   ),
   ledgerRow('l23_total_2017', ledgerBlankSide('5 800'), ledgerBlankSide('5 800'), { isTotal: true }),
   ledgerRow(
     'l23_2018_entries',
-    ledgerEntrySide('l23_baki_bb_2018', '2018 Jan 1', 'Baki b/b', '5 800'),
-    ledgerEntrySide('l23_pelupusan', '2018 Dis 31', 'Pelupusan Mesin Jahit', '5 800')
+    ledgerEntrySide('l23_baki_bb_2018', '2018\nJan 1', 'Baki b/b', '5 800'),
+    ledgerEntrySide('l23_pelupusan', '2018\nDis 31', 'Pelupusan Mesin Jahit', '5 800')
   ),
   ledgerRow('l23_total_2018', ledgerBlankSide('5 800'), ledgerBlankSide('5 800'), { isTotal: true })
 ];
@@ -1448,21 +1448,21 @@ const LEVEL_23_LABELS = getLedgerLabels(LEVEL_23_STRUCTURE);
 const LEVEL_24_STRUCTURE: RowConfig[] = [
   ledgerRow(
     'l24_2016_entries',
-    ledgerEntrySide('l24_baki_hb_2016', '2016 Dis 31', 'Baki h/b', '580'),
-    ledgerEntrySide('l24_susut_2016', '2016 Dis 31', 'Susut Nilai Mesin Jahit', '580')
+    ledgerEntrySide('l24_baki_hb_2016', '2016\nDis 31', 'Baki h/b', '580'),
+    ledgerEntrySide('l24_susut_2016', '2016\nDis 31', 'Susut Nilai Mesin Jahit', '580')
   ),
   ledgerRow('l24_total_2016', ledgerBlankSide('580'), ledgerBlankSide('580'), { isTotal: true }),
   ledgerRow(
     'l24_2017_first',
-    ledgerEntrySide('l24_baki_hb_2017', '2017 Dis 31', 'Baki h/b', '1 160'),
-    ledgerEntrySide('l24_baki_bb_2017', '2017 Dis 31', 'Baki b/b', '580')
+    ledgerEntrySide('l24_baki_hb_2017', '2017\nDis 31', 'Baki h/b', '1 160'),
+    ledgerEntrySide('l24_baki_bb_2017', '2017\nDis 31', 'Baki b/b', '580')
   ),
   ledgerRow('l24_2017_second', ledgerBlankSide(), ledgerEntrySide('l24_susut_2017', '', 'Susut Nilai Mesin Jahit', '580')),
   ledgerRow('l24_total_2017', ledgerBlankSide('1 160'), ledgerBlankSide('1 160'), { isTotal: true }),
   ledgerRow(
     'l24_2018_first',
-    ledgerEntrySide('l24_pelupusan', '2018 Dis 31', 'Pelupusan Mesin Jahit', '1 740'),
-    ledgerEntrySide('l24_baki_bb_2018', '2018 Dis 31', 'Baki b/b', '1 160')
+    ledgerEntrySide('l24_pelupusan', '2018\nDis 31', 'Pelupusan Mesin Jahit', '1 740'),
+    ledgerEntrySide('l24_baki_bb_2018', '2018\nDis 31', 'Baki b/b', '1 160')
   ),
   ledgerRow('l24_2018_second', ledgerBlankSide(), ledgerEntrySide('l24_susut_2018', '', 'Susut Nilai Mesin Jahit', '580')),
   ledgerRow('l24_total_2018', ledgerBlankSide('1 740'), ledgerBlankSide('1 740'), { isTotal: true })
@@ -1473,8 +1473,8 @@ const LEVEL_24_LABELS = getLedgerLabels(LEVEL_24_STRUCTURE);
 const LEVEL_25_STRUCTURE: RowConfig[] = [
   ledgerRow(
     'l25_pelupusan_first',
-    ledgerEntrySide('l25_mesin_jahit', '2018 Dis 31', 'Mesin Jahit', '5 800'),
-    ledgerEntrySide('l25_snt_mesin', '2018 Dis 31', 'Susut Nilai Terkumpul Mesin Jahit', '1 740')
+    ledgerEntrySide('l25_mesin_jahit', '2018\nDis 31', 'Mesin Jahit', '5 800'),
+    ledgerEntrySide('l25_snt_mesin', '2018\nDis 31', 'Susut Nilai Terkumpul Mesin Jahit', '1 740')
   ),
   ledgerRow(
     'l25_pelupusan_second',
@@ -1485,8 +1485,8 @@ const LEVEL_25_STRUCTURE: RowConfig[] = [
 
   ledgerRow(
     'l25_untung_first',
-    ledgerEntrySide('l25_akaun_untung_rugi', '2018 Dis 31', 'Akaun Untung Rugi', '140'),
-    ledgerEntrySide('l25_pelupusan_mesin', '2018 Dis 31', 'Pelupusan Mesin Jahit', '140')
+    ledgerEntrySide('l25_akaun_untung_rugi', '2018\nDis 31', 'Akaun Untung Rugi', '140'),
+    ledgerEntrySide('l25_pelupusan_mesin', '2018\nDis 31', 'Pelupusan Mesin Jahit', '140')
   ),
   ledgerRow('l25_untung_total', ledgerBlankSide('140'), ledgerBlankSide('140'), { isTotal: true }),
 

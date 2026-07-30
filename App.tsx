@@ -72,7 +72,7 @@ const Header = ({
         </button>
         <div>
           <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2 tracking-tight">
-            <span className="text-yellow-500">Prinsip Akaun Format</span>
+            <span className="text-yellow-500">纪老师会计Format训练网</span>
           </h1>
           <p className="text-slate-400 text-xs md:text-sm font-medium">Player: <span className="text-white">{studentName}</span></p>
         </div>
@@ -139,7 +139,7 @@ const WelcomeScreen = ({ onStart }: { onStart: (name: string) => void }) => {
           <div className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
             <Award className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Prinsip Akaun Format</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">纪老师会计Format训练网</h1>
           <p className="text-indigo-100">Enter your name to begin practice</p>
         </div>
         <form onSubmit={handleSubmit} className="p-8">
@@ -944,7 +944,7 @@ export default function App() {
       }
       return (
         <>
-          <td className={`p-1 text-gray-500 text-xs font-mono text-center w-[10%] ${cellDivider}`}>{sideConfig.date}</td>
+          <td className={`p-1 text-gray-500 text-xs font-mono text-center leading-tight whitespace-pre-line w-[10%] ${cellDivider}`}>{sideConfig.date}</td>
           <td className={`p-1 w-[50%] ${cellDivider}`}>
             {sideConfig.zone 
               ? renderZone(sideConfig.zone, 0, null, true) 
