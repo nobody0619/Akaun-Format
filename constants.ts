@@ -650,7 +650,7 @@ const LEVEL_7_STRUCTURE: RowConfig[] = [
 // --- LEVEL 8: AKAUN SEMASA (LEDGER) ---
 
 const l8_debit_swappable = ['Ambilan', 'Faedah atas Ambilan'];
-const l8_credit_swappable = ['Gaji', 'Elaun', 'Faedah atas Pinjaman', 'Pengasingan Untung Rugi'];
+const l8_credit_swappable = ['Gaji', 'Elaun', 'Faedah atas Pinjaman', 'Pengasingan Untung Rugi', 'Faedah atas Modal'];
 
 const LEVEL_8_LABELS = [
   "Baki b/b (-)", "Baki b/b (+)", "Baki b/b",
@@ -685,13 +685,18 @@ const LEVEL_8_STRUCTURE: RowConfig[] = [
     { date: '', staticLabel: '', col1: '', col2: '' }, // Empty Left
     { date: '', zone: { id: 'l8_c4', expectedLabels: l8_credit_swappable, widthClass: 'w-full', group: 'l8_cr' }, col1: 'x', col2: 'x' }
   ),
-  // Row 6: Totals (Re-added)
+  // Row 6: Fifth swappable credit item
+  ledgerRow('l8_r6_credit',
+    { date: '', staticLabel: '', col1: '', col2: '' },
+    { date: '', zone: { id: 'l8_c5', expectedLabels: l8_credit_swappable, widthClass: 'w-full', group: 'l8_cr' }, col1: 'x', col2: 'x' }
+  ),
+  // Row 7: Totals
   ledgerRow('l8_total', 
     { date: '', staticLabel: '', col1: 'xx', col2: 'xx' }, 
     { date: '', staticLabel: '', col1: 'xx', col2: 'xx' },
     { isTotal: true }
   ),
-  // Row 7: Closing/Opening Next
+  // Row 8: Closing/Opening Next
   ledgerRow('l8_r6', 
     { date: '', staticLabel: '', col1: '', col2: '' }, 
     { date: 'Jan 1', zone: { id: 'l8_bbal_next', expectedLabels: ['Baki b/b'], widthClass: 'w-full' }, col1: 'xx', col2: 'xx' }
