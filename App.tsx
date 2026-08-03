@@ -126,19 +126,21 @@ const Header = ({
 
 
 const TuitionContact = () => (
-  <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[80] w-[calc(100%-1.5rem)] sm:w-auto bg-gray-900 text-white border border-gray-700 shadow-2xl rounded-lg px-3 py-2 flex items-center justify-between sm:justify-center gap-3">
-    <span className="font-bold text-xs sm:text-sm whitespace-nowrap">补会计就找纪老师</span>
-    <a
-      href="https://wa.me/60167312519"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-green-600 hover:bg-green-700 text-white rounded-md px-3 py-2 flex items-center gap-2 font-bold text-xs sm:text-sm whitespace-nowrap transition-colors"
-      aria-label="WhatsApp 纪老师 016-731 2519"
-    >
-      <MessageCircle className="w-4 h-4" />
-      <span>016-731 2519</span>
-    </a>
-  </div>
+  <footer className="order-last shrink-0 w-full bg-gray-900 text-white border-t border-gray-700 px-4 py-3">
+    <div className="max-w-7xl mx-auto flex items-center justify-center gap-3">
+      <span className="font-bold text-xs sm:text-sm whitespace-nowrap">补会计就找纪老师</span>
+      <a
+        href="https://wa.me/60167312519"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-green-600 hover:bg-green-700 text-white rounded-md px-3 py-2 flex items-center gap-2 font-bold text-xs sm:text-sm whitespace-nowrap transition-colors"
+        aria-label="WhatsApp 纪老师 016-731 2519"
+      >
+        <MessageCircle className="w-4 h-4" />
+        <span>016-731 2519</span>
+      </a>
+    </div>
+  </footer>
 );
 
 const WelcomeScreen = ({ onStart }: { onStart: (name: string) => void }) => {
@@ -150,9 +152,9 @@ const WelcomeScreen = ({ onStart }: { onStart: (name: string) => void }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col items-center p-4">
       <TuitionContact />
-      <div className="bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
+      <div className="bg-white max-w-md w-full my-auto rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-500">
         <div className="bg-indigo-600 p-8 text-center">
           <div className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
             <Award className="w-8 h-8 text-white" />
@@ -196,7 +198,7 @@ const LevelSelection = ({
   onSelectLevel: (idx: number) => void 
 }) => {
   return (
-    <div className="min-h-screen bg-slate-100 p-4 pb-20 md:p-8 md:pb-20">
+    <div className="min-h-screen bg-slate-100 p-4 md:p-8 flex flex-col">
       <TuitionContact />
       <div className="max-w-5xl mx-auto">
         <div className="mb-8 flex justify-between items-end">
@@ -1154,7 +1156,7 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-200 select-none font-sans pb-16">
+    <div className="min-h-screen flex flex-col bg-slate-200 select-none font-sans">
       <TuitionContact />
       <Header
         currentLevel={currentLevel}
@@ -1299,7 +1301,7 @@ export default function App() {
           )}
         </div>
 
-        <div className="lg:w-80 flex-shrink-0 flex flex-col h-[35vh] lg:h-[calc(100vh-2rem)] sticky bottom-16 lg:bottom-auto lg:top-4 z-30">
+        <div className="lg:w-80 flex-shrink-0 flex flex-col h-[35vh] lg:h-[calc(100vh-2rem)] sticky bottom-0 lg:top-4 z-30">
           <div className="bg-white rounded-t-xl lg:rounded-xl shadow-2xl lg:shadow-xl border-t lg:border border-gray-200 flex flex-col h-full overflow-hidden ring-1 ring-black/5">
             <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
               <h3 className="font-bold text-gray-700 flex items-center gap-2">
