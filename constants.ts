@@ -1505,6 +1505,94 @@ const LEVEL_25_STRUCTURE: RowConfig[] = [
 const LEVEL_25_LABELS = getLedgerLabels(LEVEL_25_STRUCTURE);
 
 
+// --- LEVEL 26: RECEIPTS AND PAYMENTS ---
+
+const l26_receipts = [
+  'Yuran Ahli',
+  'Yuran Masuk',
+  'Yuran Pertandingan',
+  'Derma',
+  'Akaun Belum Terima'
+];
+
+const l26_payments = [
+  'Belian Cenderahati',
+  'Peralatan Kelab',
+  'Kadar bayaran',
+  'Belanja pertandingan',
+  'Upah pekerja kedai',
+  'Pembaikan alatan sukan',
+  'Elaun pemain',
+  'Belanja Am'
+];
+
+const LEVEL_26_LABELS = [...l26_receipts, ...l26_payments];
+
+const LEVEL_26_STRUCTURE: RowConfig[] = [
+  staticRow('l26_baki_bb', 'Baki b/b', '4 800', 2),
+  staticRow('l26_penerimaan_header', 'Penerimaan:', '', 2, 0, { isHeader: true, isUnderlined: true }),
+
+  swappableRow('l26_receipt_1', l26_receipts, 'l26_receipts', '20 800', 1),
+  swappableRow('l26_receipt_2', l26_receipts, 'l26_receipts', '1 800', 1),
+  swappableRow('l26_receipt_3', l26_receipts, 'l26_receipts', '3 800', 1),
+  swappableRow('l26_receipt_4', l26_receipts, 'l26_receipts', '2 100', 1),
+  swappableRow('l26_receipt_5', l26_receipts, 'l26_receipts', '9 100', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l26_receipts_total', '37 600', 2),
+  amountOnlyRow('l26_available_total', '42 400', 2, { hasBottomBorder: true }),
+
+  staticRow('l26_pembayaran_header', 'Tolak: Pembayaran:', '', 2, 0, { isHeader: true, isUnderlined: true }),
+  swappableRow('l26_payment_1', l26_payments, 'l26_payments', '4 500', 1),
+  swappableRow('l26_payment_2', l26_payments, 'l26_payments', '5 200', 1),
+  swappableRow('l26_payment_3', l26_payments, 'l26_payments', '650', 1),
+  swappableRow('l26_payment_4', l26_payments, 'l26_payments', '2 980', 1),
+  swappableRow('l26_payment_5', l26_payments, 'l26_payments', '2 800', 1),
+  swappableRow('l26_payment_6', l26_payments, 'l26_payments', '2 400', 1),
+  swappableRow('l26_payment_7', l26_payments, 'l26_payments', '2 200', 1),
+  swappableRow('l26_payment_8', l26_payments, 'l26_payments', '600', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l26_payments_total', '(21 330)', 2, { hasBottomBorder: true }),
+  staticRow('l26_baki_hb', 'Baki h/b', '21 070', 2, 0, { isTotal: true })
+];
+
+// --- LEVEL 27: INCOME AND EXPENDITURE ---
+
+const l27_revenues = [
+  'Yuran',
+  'Yuran Masuk',
+  'Untung (Pertandingan)',
+  'Derma',
+  'Untung (Cenderahati)'
+];
+
+const l27_expenses = [
+  'Kadar bayaran (650 + 470 - 400)',
+  'Pembaikan alatan sukan (2 400 + 280)',
+  'Elaun pemain',
+  'Belanja Am',
+  'Susut nilai Peralatan Kelab (20% x 13 000)'
+];
+
+const LEVEL_27_LABELS = [...l27_revenues, ...l27_expenses];
+
+const LEVEL_27_STRUCTURE: RowConfig[] = [
+  staticRow('l27_pendapatan_header', 'Pendapatan Hasil:', '', 2, 0, { isHeader: true, isUnderlined: true }),
+  swappableRow('l27_revenue_1', l27_revenues, 'l27_revenues', '20 830', 2),
+  swappableRow('l27_revenue_2', l27_revenues, 'l27_revenues', '1 800', 2),
+  swappableRow('l27_revenue_3', l27_revenues, 'l27_revenues', '820', 2),
+  swappableRow('l27_revenue_4', l27_revenues, 'l27_revenues', '2 100', 2),
+  swappableRow('l27_revenue_5', l27_revenues, 'l27_revenues', '2 700', 2, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l27_revenues_total', '28 250', 2, { hasBottomBorder: true }),
+
+  staticRow('l27_perbelanjaan_header', 'Tolak: Perbelanjaan Hasil:', '', 2, 0, { isHeader: true, isUnderlined: true }),
+  swappableRow('l27_expense_1', l27_expenses, 'l27_expenses', '720', 1),
+  swappableRow('l27_expense_2', l27_expenses, 'l27_expenses', '2 680', 1),
+  swappableRow('l27_expense_3', l27_expenses, 'l27_expenses', '2 200', 1),
+  swappableRow('l27_expense_4', l27_expenses, 'l27_expenses', '600', 1),
+  swappableRow('l27_expense_5', l27_expenses, 'l27_expenses', '2 600', 1, 0, { hasBottomBorder: true }),
+  amountOnlyRow('l27_expenses_total', '(8 800)', 2, { hasBottomBorder: true }),
+  staticRow('l27_lebihan', 'Lebihan', '19 450', 2, 0, { isTotal: true, isHeader: true })
+];
+
+
 export const LEVELS: LevelConfig[] = [
   {
     title: "Akaun Perdagangan",
@@ -1762,6 +1850,22 @@ export const LEVELS: LevelConfig[] = [
         variant: 'statement-excerpt'
       }
     ]
+  },
+  {
+    title: "Penyata Penerimaan dan Pembayaran",
+    subtitle: "Penyata Penerimaan dan Pembayaran bagi tahun berakhir 31 Disember 2017",
+    labels: LEVEL_26_LABELS,
+    structure: LEVEL_26_STRUCTURE,
+    layoutType: 'statement',
+    companyName: 'Kelab Sukan Lubok Jong'
+  },
+  {
+    title: "Akaun Pendapatan dan Perbelanjaan",
+    subtitle: "Akaun Pendapatan dan Perbelanjaan bagi tahun berakhir 31 Disember 2017",
+    labels: LEVEL_27_LABELS,
+    structure: LEVEL_27_STRUCTURE,
+    layoutType: 'statement',
+    companyName: 'Kelab Sukan Lubok Jong'
   }
 ];
 
