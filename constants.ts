@@ -1483,7 +1483,7 @@ const LEVEL_25_STRUCTURE: RowConfig[] = [
   ),
   ledgerRow(
     'l25_pelupusan_second',
-    ledgerEntrySide('l25_untung_pelupusan', '', 'Untung Atas Pelupusan', '140'),
+    ledgerEntrySide('l25_untung_pelupusan', '', 'Untung Atas Pelupusan Mesin Jahit', '140'),
     ledgerEntrySide('l25_bank', '', 'Bank', '4 200')
   ),
   ledgerRow('l25_pelupusan_total', ledgerBlankSide('5 940'), ledgerBlankSide('5 940'), { isTotal: true }),
@@ -1497,7 +1497,7 @@ const LEVEL_25_STRUCTURE: RowConfig[] = [
 
   ledgerRow(
     'l25_ur_excerpt',
-    ledgerEntrySide('l25_untung_excerpt', '', 'Untung atas Pelupusan Mesin Jahit', '140'),
+    ledgerEntrySide('l25_untung_excerpt', '', 'Untung Atas Pelupusan Mesin Jahit', '140'),
     ledgerBlankSide()
   )
 ];
