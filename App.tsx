@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { DraggableItem, RowConfig, DropZoneConfig, GameState, LedgerSideConfig } from './types';
 import { LEVELS } from './constants';
-import { FileQuestion, CheckCircle2, Award, GripVertical, ChevronRight, BookOpen, ArrowLeft, Play, User, Trophy, Send, Loader2, Home, ArrowRight, ZoomOut, ZoomIn, RotateCcw, MessageCircle } from 'lucide-react';
+import { FileQuestion, CheckCircle2, Award, GripVertical, ChevronRight, BookOpen, ArrowLeft, Play, User, Trophy, Send, Loader2, Home, ArrowRight, ZoomOut, ZoomIn, RotateCcw, MessageCircle, GripHorizontal, Maximize2, Minimize2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 // Reverted to executable Web App URL because /library/ URLs cannot receive POST requests
@@ -248,6 +248,32 @@ export default function App() {
   const [studentName, setStudentName] = useState('');
   const [currentLevel, setCurrentLevel] = useState(0);
   const [contentZoom, setContentZoom] = useState(1);
+  const [mobilePoolHeight, setMobilePoolHeight] = useState(35);
+  const mobilePoolResizeRef = useRef<{ startY: number; startHeight: number } | null>(null);
+
+  const startMobilePoolResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (window.innerWidth >= 1024) return;
+    mobilePoolResizeRef.current = {
+      startY: event.clientY,
+      startHeight: mobilePoolHeight
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const moveMobilePoolResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    const resizeState = mobilePoolResizeRef.current;
+    if (!resizeState) return;
+
+    const heightChange = ((resizeState.startY - event.clientY) / window.innerHeight) * 100;
+    setMobilePoolHeight(Math.min(82, Math.max(18, resizeState.startHeight + heightChange)));
+  };
+
+  const stopMobilePoolResize = (event: React.PointerEvent<HTMLDivElement>) => {
+    mobilePoolResizeRef.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
   
   // Scoring State
   const [startTime, setStartTime] = useState(Date.now());
@@ -1301,13 +1327,49 @@ export default function App() {
           )}
         </div>
 
-        <div className="lg:w-80 flex-shrink-0 flex flex-col h-[35vh] lg:h-[calc(100vh-2rem)] sticky bottom-0 lg:top-4 z-30">
+        <div
+          className="lg:w-80 flex-shrink-0 flex flex-col h-[var(--mobile-pool-height)] lg:h-[calc(100vh-2rem)] sticky bottom-0 lg:top-4 z-30"
+          style={{ '--mobile-pool-height': `${mobilePoolHeight}vh` } as React.CSSProperties}
+        >
           <div className="bg-white rounded-t-xl lg:rounded-xl shadow-2xl lg:shadow-xl border-t lg:border border-gray-200 flex flex-col h-full overflow-hidden ring-1 ring-black/5">
-            <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="font-bold text-gray-700 flex items-center gap-2">
-                <FileQuestion className="w-5 h-5 text-indigo-500" />
-                Items Pool <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full ml-1">{gameState.availableItems.length}</span>
+            <div
+              className="lg:hidden h-6 flex-shrink-0 flex items-center justify-center bg-gray-100 border-b border-gray-200 cursor-ns-resize touch-none"
+              onPointerDown={startMobilePoolResize}
+              onPointerMove={moveMobilePoolResize}
+              onPointerUp={stopMobilePoolResize}
+              onPointerCancel={stopMobilePoolResize}
+              role="separator"
+              aria-label="Drag to resize items panel"
+              title="Drag to resize items panel"
+            >
+              <GripHorizontal className="w-7 h-4 text-gray-500" />
+            </div>
+            <div className="p-3 md:p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center gap-2">
+              <h3 className="font-bold text-gray-700 flex items-center gap-2 min-w-0">
+                <FileQuestion className="w-5 h-5 text-indigo-500 flex-shrink-0" />
+                <span className="truncate">Items Pool</span>
+                <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{gameState.availableItems.length}</span>
               </h3>
+              <div className="lg:hidden flex items-center gap-1 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setMobilePoolHeight(18)}
+                  className="w-9 h-9 inline-flex items-center justify-center text-gray-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-md"
+                  aria-label="Shrink items panel"
+                  title="Shrink items panel"
+                >
+                  <Minimize2 className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMobilePoolHeight(82)}
+                  className="w-9 h-9 inline-flex items-center justify-center text-gray-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-md"
+                  aria-label="Expand items panel"
+                  title="Expand items panel"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
             
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-gray-50/50">
