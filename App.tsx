@@ -251,6 +251,12 @@ export default function App() {
   const [mobilePoolHeight, setMobilePoolHeight] = useState(35);
   const mobilePoolResizeRef = useRef<{ startY: number; startHeight: number } | null>(null);
 
+  useEffect(() => {
+    if (view === 'game') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+  }, [view, currentLevel]);
+
   const startMobilePoolResize = (event: React.PointerEvent<HTMLDivElement>) => {
     if (window.innerWidth >= 1024) return;
     mobilePoolResizeRef.current = {
