@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { DraggableItem, RowConfig, DropZoneConfig, GameState, LedgerSideConfig } from './types';
 import { LEVELS } from './constants';
+import { FormatInputControls, FormatTypingDialog, type FormatInputMode } from './FormatTypingInput';
 import { FileQuestion, CheckCircle2, Award, GripVertical, ChevronRight, BookOpen, ArrowLeft, Play, User, Trophy, Send, Loader2, Home, ArrowRight, ZoomOut, ZoomIn, RotateCcw, MessageCircle, GripHorizontal, Maximize2, Minimize2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -308,6 +309,15 @@ export default function App() {
   });
 
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  const [inputMode, setInputMode] = useState<FormatInputMode>('drag');
+  const [typingZone, setTypingZone] = useState<DropZoneConfig | null>(null);
+
+  const changeInputMode = (mode: FormatInputMode) => {
+    setInputMode(mode);
+    setTypingZone(null);
+    setDraggedItemId(null);
+    setGameState(previous => ({ ...previous, selectedItemId: null }));
+  };
 
   const activeLevelConfig = LEVELS[currentLevel];
   const activeStructure = activeLevelConfig.structure;
@@ -363,6 +373,9 @@ export default function App() {
     setIsSubmitting(false);
     setShowNextButton(false);
     setCurrentStatementSection(0);
+    setInputMode('drag');
+    setTypingZone(null);
+    setDraggedItemId(null);
     
     // For Formula mode, shuffle questions
     if (layoutType === 'formula') {
@@ -561,7 +574,7 @@ export default function App() {
   };
 
   const handleDragStart = (e: React.DragEvent, item: DraggableItem) => {
-    if (gameState.completed) return;
+    if (gameState.completed || inputMode !== 'drag') return;
     setDraggedItemId(item.id);
     setGameState(prev => ({ ...prev, selectedItemId: item.id }));
     e.dataTransfer.effectAllowed = 'move';
@@ -803,13 +816,40 @@ export default function App() {
       const textStyle = (row?.isHeader && !isLedger) ? "font-bold text-gray-900" : "text-gray-800";
       const style = zone.customStyle || {};
       const isAbsolute = !!zone.customStyle;
+      const canActivate = !gameState.completed && !content;
+
+      const activateZone = () => {
+        if (!canActivate) return;
+        if (inputMode === 'type') {
+          setTypingZone(zone);
+        } else if (gameState.selectedItemId) {
+          attemptMove(zone, gameState.selectedItemId);
+        }
+      };
 
       return (
         <div 
           key={zone.id}
-          onClick={() => gameState.selectedItemId && attemptMove(zone, gameState.selectedItemId)}
-          onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }}
-          onDrop={(e) => { e.preventDefault(); if (draggedItemId) attemptMove(zone, draggedItemId); }}
+          role="button"
+          tabIndex={canActivate ? 0 : -1}
+          aria-disabled={!canActivate}
+          aria-label={content ? `Filled with ${content}` : (inputMode === 'type' ? 'Type answer' : 'Answer slot')}
+          onClick={activateZone}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              activateZone();
+            }
+          }}
+          onDragOver={(e) => {
+            if (inputMode !== 'drag') return;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            if (inputMode === 'drag' && draggedItemId) attemptMove(zone, draggedItemId);
+          }}
           style={style}
           className={`
             ${isAbsolute ? 'absolute shadow-lg z-10 h-8 sm:h-10 lg:h-12 px-1 sm:px-2' : 'relative h-12 px-2'}
@@ -825,7 +865,9 @@ export default function App() {
             </span>
           ) : (
             <span className={`text-gray-400 ${isAbsolute ? 'text-[8px] sm:text-[10px] lg:text-xs' : 'text-xs'} font-medium w-full text-center tracking-wide uppercase`}>
-               {status === 'wrong' ? "Incorrect" : (gameState.selectedItemId ? "Drop Here" : "")}
+               {status === 'wrong'
+                 ? "Incorrect"
+                 : (inputMode === 'type' ? "Click to type" : (gameState.selectedItemId ? "Drop Here" : ""))}
             </span>
           )}
         </div>
@@ -1200,6 +1242,24 @@ export default function App() {
         onZoomReset={() => setContentZoom(1)}
       />
 
+      <FormatInputControls
+        mode={inputMode}
+        onChange={changeInputMode}
+        completed={gameState.completed}
+      />
+
+      {typingZone && (
+        <FormatTypingDialog
+          key={typingZone.id}
+          items={gameState.availableItems}
+          onClose={() => setTypingZone(null)}
+          onAnswer={itemId => {
+            attemptMove(typingZone, itemId);
+            setTypingZone(null);
+          }}
+        />
+      )}
+
       <main
         className="flex-grow p-4 md:p-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto w-full"
         style={{ zoom: contentZoom }}
@@ -1386,11 +1446,28 @@ export default function App() {
                   return (
                     <div
                       key={item.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, item)}
-                      onClick={() => !gameState.completed && setGameState(p => ({ ...p, selectedItemId: p.selectedItemId === item.id ? null : item.id }))}
+                      role="button"
+                      aria-disabled={inputMode === 'type' || gameState.completed}
+                      tabIndex={inputMode === 'drag' && !gameState.completed ? 0 : -1}
+                      draggable={inputMode === 'drag'}
+                      onDragStart={(e) => {
+                        if (inputMode === 'drag') handleDragStart(e, item);
+                      }}
+                      onClick={() => {
+                        if (inputMode === 'drag' && !gameState.completed) {
+                          setGameState(p => ({ ...p, selectedItemId: p.selectedItemId === item.id ? null : item.id }));
+                        }
+                      }}
+                      onKeyDown={event => {
+                        if (inputMode !== 'drag' || gameState.completed) return;
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          setGameState(p => ({ ...p, selectedItemId: p.selectedItemId === item.id ? null : item.id }));
+                        }
+                      }}
                       className={`
-                        w-full px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 border-l-4 cursor-grab active:cursor-grabbing select-none flex justify-between items-center group
+                        w-full px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200 border-l-4 select-none flex justify-between items-center group
+                        ${inputMode === 'drag' ? 'cursor-grab active:cursor-grabbing' : 'cursor-default'}
                         ${isSelected 
                           ? 'bg-indigo-600 text-white border-l-indigo-800 shadow-md scale-[1.02]' 
                           : 'bg-white text-gray-700 border-l-indigo-500 border-y border-r border-gray-200 hover:shadow-md hover:-translate-y-0.5'
